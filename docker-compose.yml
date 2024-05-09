@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:16.2
+    volumes:
+        - my-db:/var/lib/postgresql/data
+    environment:
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_DB=db
+        - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+        - 5432:5432
+
+volumes:
+  my-db:

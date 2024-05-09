@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hasan.productservice.Entity.Product;
 import com.hasan.productservice.service.ProductService;
 
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
-
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
@@ -37,10 +40,9 @@ public class ProductController {
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
         //TODO: process POST request
-        
-        return new ResponseEntity<>(productService.saveProduct(product), null);
+        return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

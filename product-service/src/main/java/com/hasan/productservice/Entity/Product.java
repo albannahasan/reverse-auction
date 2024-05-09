@@ -28,12 +28,10 @@ public class Product {
 
     @NotBlank(message = "Description cannot be blank")
     @NonNull
-    @Column(name = "name", nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @NotBlank(message = "Price cannot be blank")
-    @NonNull
-    @Column(name = "name", nullable = false)
+    @Column(name = "price", nullable = false)
     private Long price;
 
 
