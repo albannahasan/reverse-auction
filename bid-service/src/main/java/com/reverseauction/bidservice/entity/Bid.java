@@ -20,17 +20,12 @@ public class Bid {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-    @NotBlank(message = "user id cannot be blank")
 	@Column(nullable = false, unique = true)
 	private long userId;
 
-    @NotBlank(message = "user id cannot be blank")
 	@Column(nullable = false, unique = true)
 	private long productId;
 
-    @NotBlank(message = "Price cannot be blank")
 	@Column(nullable = false)
 	private double price;
-
-
 }

@@ -8,6 +8,6 @@ public interface BidService {
     Bid getBid(Long id);
     Bid saveBid(Bid bid);
     void deleteBid(Long id);    
-    Bid updateBid(Double amount, Long id, Long userId, Long productId);
+    // Bid updateBid(Double amount, Long id, Long userId, Long productId);
     List<Bid> getBids();
 }
