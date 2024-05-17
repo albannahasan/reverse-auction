@@ -19,7 +19,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProduct(Long id) {
         Optional<Product> product = productRepository.findById(id);
-        return unwrapCourse(product, id);
+        return unwrapProduct(product, id);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
         return (List<Product>)productRepository.findAll();
     }
 
-    static Product unwrapCourse(Optional<Product> entity, Long id) {
+    static Product unwrapProduct(Optional<Product> entity, Long id) {
         if (entity.isPresent()) return entity.get();
         else throw new ProductNotFoundException(id);
     }

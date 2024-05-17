@@ -33,7 +33,7 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getMethodName(@PathVariable Long id) {
+    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
         return new ResponseEntity<>(productService.getProduct(id), HttpStatus.OK);
     }
     
@@ -55,6 +55,4 @@ public class ProductController {
     public ResponseEntity<List<Product>> getProducts() {
         return new ResponseEntity<>(productService.getProducts(), HttpStatus.OK);
     }
-
-    
 }
