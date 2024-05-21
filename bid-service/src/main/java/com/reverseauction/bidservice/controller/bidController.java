@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/bid")
+@RequestMapping("/bid")
 public class bidController {
 
     BidService bidService;
