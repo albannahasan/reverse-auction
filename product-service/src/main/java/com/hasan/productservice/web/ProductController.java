@@ -3,13 +3,13 @@ package com.hasan.productservice.web;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hasan.productservice.Entity.Product;
+import com.hasan.productservice.dto.ProductDto;
 import com.hasan.productservice.service.ProductService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/product")
 public class ProductController {
     
     ProductService productService;
@@ -52,7 +52,11 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Product>> getProducts() {
-        return new ResponseEntity<>(productService.getProducts(), HttpStatus.OK);
+    public ResponseEntity<List<ProductDto>> getProducts(
+        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+
+        ) {
+        return new ResponseEntity<>(productService.getProducts(pageNo, pageSize), HttpStatus.OK);
     }
 }
