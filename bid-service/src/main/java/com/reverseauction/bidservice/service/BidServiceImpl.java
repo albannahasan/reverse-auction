@@ -2,9 +2,13 @@ package com.reverseauction.bidservice.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.reverseauction.bidservice.dto.BidDto;
 import com.reverseauction.bidservice.entity.Bid;
 import com.reverseauction.bidservice.exception.BidNotFoundException;
 import com.reverseauction.bidservice.repository.BidRepository;
@@ -33,8 +37,12 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public List<Bid> getBids() {
-        return (List<Bid>)bidRepository.findAll();
+    public List<BidDto> getBids(int pageNo, int pageSize) {
+        PageRequest pageable = PageRequest.of(pageNo, pageSize);
+        Page<Bid> products = bidRepository.findAll(pageable);
+        List<Bid> listOfProduct = products.getContent();
+
+        return listOfProduct.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
     }
 
     // @Override
@@ -44,10 +52,23 @@ public class BidServiceImpl implements BidService {
     //     unwrappedGrade.setPrice(amount);
     //     return bidRepository.save(unwrappedGrade);
     // }
+    
 
     static Bid unwrapBid(Optional<Bid> entity, Long id) {
         if (entity.isPresent()) return entity.get();
         else throw new BidNotFoundException(id);
+    }
+
+    private BidDto mapToDto(Bid bid) {
+        if (bid == null) {
+            return null;
+        }
+        BidDto bidDTO = new BidDto();
+        bidDTO.setId(bid.getId());
+        bidDTO.setUserId(bid.getUserId());
+        bidDTO.setProductId(bid.getProductId());
+        bidDTO.setPrice(bid.getPrice());
+        return bidDTO;
     }
     
 }

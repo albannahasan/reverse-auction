@@ -16,5 +16,4 @@ public class ProductDto {
     private List<String> images;
     private LocalDateTime createdDate;
 
-    // Getters and setters
 }

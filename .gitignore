@@ -1,0 +1,6 @@
+*.class
+mvnw*
+maven-*
+/target/
+/target/classes/
+/.mvn/*

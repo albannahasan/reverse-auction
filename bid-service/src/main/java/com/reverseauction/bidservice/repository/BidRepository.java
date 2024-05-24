@@ -1,12 +1,10 @@
 package com.reverseauction.bidservice.repository;
 
-import java.util.Optional;
-
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.reverseauction.bidservice.entity.Bid;
 
-public interface BidRepository extends CrudRepository<Bid, Long> {
+public interface BidRepository extends JpaRepository<Bid, Long> {
 
     // Optional<Bid> findByUserIdAndproductId(Long userId, Long productId);
 

@@ -2,6 +2,7 @@ package com.reverseauction.bidservice.service;
 
 import java.util.List;
 
+import com.reverseauction.bidservice.dto.BidDto;
 import com.reverseauction.bidservice.entity.Bid;
 
 public interface BidService {
@@ -9,5 +10,5 @@ public interface BidService {
     Bid saveBid(Bid bid);
     void deleteBid(Long id);    
     // Bid updateBid(Double amount, Long id, Long userId, Long productId);
-    List<Bid> getBids();
+    List<BidDto> getBids(int pageNo, int pageSize);
 }
