@@ -3,9 +3,13 @@ spring:
         gateway:
           routes:
               - id: bid-service
-                uri: http://localhost:8082
+                uri: http://localhost:53977
                 predicates:
                   - Path=/bid/**
+              - id: product-service
+                uri: http://localhost:53978
+                predicates:
+                  - Path=/product/**
               - id: httpbin
                 uri: http://httpbin.org
                 predicates:
