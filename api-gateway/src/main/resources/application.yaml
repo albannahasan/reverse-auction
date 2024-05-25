@@ -1,7 +1,16 @@
 spring:
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            issuer-uri: http://localhost:8181/realms/reverse-auction-spring
     cloud:
         gateway:
           routes:
+              - id: discovery-server
+                uri: http://localhost:8761
+                predicates:
+                  - Path=/eureka/web
               - id: bid-service
                 uri: http://localhost:53977
                 predicates:
