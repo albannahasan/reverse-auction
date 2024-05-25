@@ -14,3 +14,4 @@ git clone https://github.com/albannablade123/reverse-auction.git
  - [Java Spring](https://spring.io/projects/spring-boot) a comprehensive framework for enterprise Java development
  - [PostgreSQL](https://www.postgresql.org/) open source object-relational database system
  - [Spring Data JPA](https://spring.io/projects/spring-data-jpa) repository abstractions
+ - [Resilience4j](https://resilience4j.readme.io/docs/getting-started) lightweight fault tolerance library designed for functional programming
