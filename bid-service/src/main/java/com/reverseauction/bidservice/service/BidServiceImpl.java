@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.reverseauction.bidservice.dto.BidDto;
 import com.reverseauction.bidservice.entity.Bid;
+import com.reverseauction.bidservice.event.BidPlacedEvent;
 import com.reverseauction.bidservice.exception.BidNotFoundException;
 import com.reverseauction.bidservice.repository.BidRepository;
 
@@ -19,6 +21,7 @@ import lombok.AllArgsConstructor;
 @Service
 public class BidServiceImpl implements BidService {
     BidRepository bidRepository;
+    private final KafkaTemplate<String, BidPlacedEvent>  kafkaTemplate;
 
     @Override
     public Bid getBid(Long id){
@@ -28,6 +31,7 @@ public class BidServiceImpl implements BidService {
 
     @Override
     public Bid saveBid(Bid product) {
+        kafkaTemplate.send("notificationTopic", new BidPlacedEvent(product.getBidNumber()));
         return bidRepository.save(product);
     }
 

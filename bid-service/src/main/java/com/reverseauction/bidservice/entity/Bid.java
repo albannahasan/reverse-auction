@@ -20,10 +20,10 @@ public class Bid {
 	private long id;
 
 	@Column(nullable = false, unique = true)
-	private long userId;
-
-	@Column(nullable = false, unique = true)
 	private long productId;
+
+	@Column(nullable = false)
+	private String bidNumber;
 
 	@Column(nullable = false)
 	private double price;
