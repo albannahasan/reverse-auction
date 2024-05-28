@@ -1,8 +1,8 @@
 package com.reverseauction.notification_service;
 
-import lombok.extern.slf4j.slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.kafka.annotation.KafkaListener;
 
 @SpringBootApplication
 public class NotificationServiceApplication {
@@ -14,7 +14,7 @@ public class NotificationServiceApplication {
 	@KafkaListener(topics = "notificationTopic")
 	public void handleNotification(BidPlacedEvent bidPlacedEvent){
 		// Send out an email notification
-		log.info("Received Notification for Order - {}", bidPlacedEvent.getBidNumber());
+		// log.info("Received Notification for Order - {}", bidPlacedEvent.getBidNumber());
 
 	}
 

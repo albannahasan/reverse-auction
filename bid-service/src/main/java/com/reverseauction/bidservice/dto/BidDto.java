@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class BidDto {
     private long id;
-    private long userId;
     private long productId;
     private double price;
 }

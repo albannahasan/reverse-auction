@@ -69,7 +69,6 @@ public class BidServiceImpl implements BidService {
         }
         BidDto bidDTO = new BidDto();
         bidDTO.setId(bid.getId());
-        bidDTO.setUserId(bid.getUserId());
         bidDTO.setProductId(bid.getProductId());
         bidDTO.setPrice(bid.getPrice());
         return bidDTO;
