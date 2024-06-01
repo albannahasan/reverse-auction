@@ -8,19 +8,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.reverseauction.bidservice.dto.BidDto;
+import com.reverseauction.bidservice.dto.ProductResponseDto;
 import com.reverseauction.bidservice.entity.Bid;
 import com.reverseauction.bidservice.event.BidPlacedEvent;
 import com.reverseauction.bidservice.exception.BidNotFoundException;
 import com.reverseauction.bidservice.repository.BidRepository;
 
 import lombok.AllArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @AllArgsConstructor
 @Service
 public class BidServiceImpl implements BidService {
     BidRepository bidRepository;
+    
+    private final WebClient.Builder webClientBuilder;
     private final KafkaTemplate<String, BidPlacedEvent>  kafkaTemplate;
 
     @Override
@@ -30,9 +35,22 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public Bid saveBid(Bid product) {
-        kafkaTemplate.send("notificationTopic", new BidPlacedEvent(product.getBidNumber()));
-        return bidRepository.save(product);
+    public Bid saveBid(Bid bid) {
+        kafkaTemplate.send("notificationTopic", new BidPlacedEvent(bid.getBidNumber()));
+        String uriTemplate = "http://localhost:8083/{id}";
+        // Call Product-Service to check if product exist
+        Mono<ProductResponseDto> productMono = webClientBuilder.build().get()
+            .uri(uriTemplate, bid.getProductId())
+            .retrieve()
+            .bodyToMono(ProductResponseDto.class);
+
+        productMono.subscribe(product -> {
+            System.out.println("Product ID: " + product.getId());
+            System.out.println("Product Name: " + product.getName());
+            System.out.println("Product Price: " + product.getPrice());
+        });
+    
+        return bidRepository.save(bid);
     }
 
     @Override

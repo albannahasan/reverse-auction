@@ -4,3 +4,4 @@ maven-*
 /target/
 /target/classes/
 /.mvn/*
+/msql_keycloak_data

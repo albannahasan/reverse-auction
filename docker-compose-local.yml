@@ -59,50 +59,11 @@ services:
     depends_on:
       - keycloak-mysql
 
-  discovery-server:
-    image: albannablade123/discovery-server:latest
-    container_name: discovery-server
-    pull_policy: always
-    ports:
-      - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
-  api-gateway:
-    image: albannablade123/api-gateway:latest
-    container_name: api-gateway
-    pull_policy: always
-    ports:
-      - "8181:8080"
-    expose:
-      - "8181"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - discovery-server
-      - keycloak
 
-  product-service:
-    container_name: product-service
-    image: albannablade123/product-service:latest
-    pull_policy: always
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - discovery-server
-      - api-gateway
-      - db
 
-  bid-service:
-    container_name: bid-service
-    image: albannablade123/bid-service:latest
-    pull_policy: always
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - discovery-server
-      - api-gateway
-      - db
+
+
     
 volumes:
   my-db:
