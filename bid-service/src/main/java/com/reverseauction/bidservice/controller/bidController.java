@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reverseauction.bidservice.dto.BidDto;
 import com.reverseauction.bidservice.entity.Bid;
+import com.reverseauction.bidservice.exception.ProductNotFoundException;
 import com.reverseauction.bidservice.service.BidService;
 
 import jakarta.validation.Valid;
@@ -37,7 +39,14 @@ public class bidController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Bid> createBid(@Valid @RequestBody Bid bid) {
         //TODO: process POST request
-        return new ResponseEntity<>(bidService.saveBid(bid), HttpStatus.CREATED);
+        try {
+            Bid createdBid = bidService.saveBid(bid).block(); // Block to wait for completion
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdBid);
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -53,5 +62,10 @@ public class bidController {
 
     ) {
         return new ResponseEntity<>(bidService.getBids(pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

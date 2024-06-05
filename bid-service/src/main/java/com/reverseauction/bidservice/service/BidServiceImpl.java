@@ -6,15 +6,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.reverseauction.bidservice.dto.BidDto;
 import com.reverseauction.bidservice.dto.ProductResponseDto;
 import com.reverseauction.bidservice.entity.Bid;
-import com.reverseauction.bidservice.event.BidPlacedEvent;
 import com.reverseauction.bidservice.exception.BidNotFoundException;
+import com.reverseauction.bidservice.exception.ProductNotFoundException;
 import com.reverseauction.bidservice.repository.BidRepository;
 
 import lombok.AllArgsConstructor;
@@ -26,32 +27,49 @@ public class BidServiceImpl implements BidService {
     BidRepository bidRepository;
     
     private final WebClient.Builder webClientBuilder;
-    private final KafkaTemplate<String, BidPlacedEvent>  kafkaTemplate;
+    // private final KafkaTemplate<String, BidPlacedEvent>  kafkaTemplate;
 
     @Override
     public Bid getBid(Long id){
         Optional<Bid> bid = bidRepository.findById(id);
+        if (!bid.isPresent()) {
+            throw new BidNotFoundException(id);
+        }
+
         return unwrapBid(bid, id);
     }
 
     @Override
-    public Bid saveBid(Bid bid) {
-        kafkaTemplate.send("notificationTopic", new BidPlacedEvent(bid.getBidNumber()));
-        String uriTemplate = "http://localhost:8083/{id}";
-        // Call Product-Service to check if product exist
+    public Mono<Bid> saveBid(Bid bid) {
+        // kafkaTemplate.send("notificationTopic", new BidPlacedEvent(bid.getBidNumber()));
+        String uriTemplate = "http://product-service/product/{id}";
+
         Mono<ProductResponseDto> productMono = webClientBuilder.build().get()
             .uri(uriTemplate, bid.getProductId())
             .retrieve()
-            .bodyToMono(ProductResponseDto.class);
+            .onStatus(HttpStatusCode::is4xxClientError,
+            error -> Mono.error(new ProductNotFoundException(bid.getProductId())))
+            .bodyToMono(ProductResponseDto.class)
+            .doOnError(WebClientResponseException.class, ex -> {
+                System.err.println("Error occurred: " + ex.getStatusCode() + " from " + ex.getRequest().getURI());
+            });;
 
-        productMono.subscribe(product -> {
-            System.out.println("Product ID: " + product.getId());
-            System.out.println("Product Name: " + product.getName());
-            System.out.println("Product Price: " + product.getPrice());
-        });
-    
-        return bidRepository.save(bid);
+        ;
+
+        return productMono
+            .map(productResponseDto -> {
+
+                Bid createdBid = new Bid();
+                createdBid = bidRepository.save(bid);
+                return createdBid;
+            })
+            .doOnError(error -> {
+                if (error instanceof ProductNotFoundException) {
+                    System.err.println(error.getMessage());
+                }
+            });
     }
+    
 
     @Override
     public void deleteBid(Long id) {  

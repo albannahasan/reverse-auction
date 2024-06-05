@@ -3,6 +3,7 @@ package com.hasan.productservice.web;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hasan.productservice.Entity.Product;
+import com.hasan.productservice.Exception.ProductNotFoundException;
 import com.hasan.productservice.dto.ProductDto;
 import com.hasan.productservice.service.ProductService;
 
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -43,9 +45,9 @@ public class ProductController {
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @CircuitBreaker(name = "bid", fallbackMethod = "fallbackMethod")
-    @TimeLimiter(name = "bid")
-    @Retry(name = "bid")
+    // @CircuitBreaker(name = "bid", fallbackMethod = "fallbackMethod")
+    // @TimeLimiter(name = "bid")
+    // @Retry(name = "bid")
     public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
         //TODO: process POST request
         return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
@@ -69,5 +71,10 @@ public class ProductController {
     public CompletableFuture<String> fallbackMethod(Product product, RuntimeException runtimeException){
         return CompletableFuture.supplyAsync(() -> "Oops! Something went wrong, please resend request after some time!");
 
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

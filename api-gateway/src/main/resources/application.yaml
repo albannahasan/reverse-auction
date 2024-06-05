@@ -3,7 +3,7 @@ spring:
       oauth2:
         resourceserver:
           jwt:
-            issuer-uri: http://localhost:8181/realms/reverse-auction-spring
+            issuer-uri: http://localhost:8080/realms/reverse-auction-spring
     cloud:
         gateway:
           routes:
@@ -12,11 +12,11 @@ spring:
                 predicates:
                   - Path=/eureka/web
               - id: bid-service
-                uri: http://localhost:53977
+                uri: lb://bid-service
                 predicates:
                   - Path=/bid/**
               - id: product-service
-                uri: http://localhost:53978
+                uri: lb://product-service
                 predicates:
                   - Path=/product/**
               - id: httpbin

@@ -24,6 +24,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProduct(Long id) {
         Optional<Product> product = productRepository.findById(id);
+        if (!product.isPresent()) {
+            throw new ProductNotFoundException(id);
+        }
+
         return unwrapProduct(product, id);
     }
 
