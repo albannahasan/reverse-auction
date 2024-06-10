@@ -32,8 +32,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product saveProduct(Product product) {
-        return productRepository.save(product);
+    public ProductDto saveProduct(ProductDto productDto) {
+        Product product = mapToEntity(productDto);
+
+        return mapToDto(productRepository.save(product));
     }
 
     @Override
@@ -48,6 +50,16 @@ public class ProductServiceImpl implements ProductService {
         List<Product> listOfProduct = products.getContent();
 
         return listOfProduct.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
+    }
+
+    public static Product mapToEntity(ProductDto productDto) {
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setPrice(productDto.getPrice());
+        product.setImages(productDto.getImages());
+        product.setCreatedDate(productDto.getCreatedDate());
+        return product;
     }
 
     private ProductDto mapToDto(Product product) {

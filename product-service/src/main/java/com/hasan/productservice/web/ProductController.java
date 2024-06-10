@@ -7,9 +7,6 @@ import com.hasan.productservice.Exception.ProductNotFoundException;
 import com.hasan.productservice.dto.ProductDto;
 import com.hasan.productservice.service.ProductService;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -48,7 +45,7 @@ public class ProductController {
     // @CircuitBreaker(name = "bid", fallbackMethod = "fallbackMethod")
     // @TimeLimiter(name = "bid")
     // @Retry(name = "bid")
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
+    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto product) {
         //TODO: process POST request
         return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
     }

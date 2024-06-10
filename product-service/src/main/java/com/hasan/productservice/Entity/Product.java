@@ -21,12 +21,14 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+@Data
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor 
 @NoArgsConstructor
 @Entity
-@Table(name="products")
+@Table(name = "products")
 public class Product extends Auditable{
     
     @Id
@@ -34,12 +36,10 @@ public class Product extends Auditable{
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
-    @NonNull
     @Column(name = "name", nullable = false)
     private String name;
 
     @NotBlank(message = "Description cannot be blank")
-    @NonNull
     @Column(name = "description", nullable = false)
     private String description;
 

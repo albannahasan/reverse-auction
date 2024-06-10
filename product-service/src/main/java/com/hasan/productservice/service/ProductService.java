@@ -7,7 +7,7 @@ import com.hasan.productservice.dto.ProductDto;
 
 public interface ProductService {
     Product getProduct(Long id);
-    Product saveProduct(Product product);
+    ProductDto saveProduct(ProductDto product);
     void deleteProduct(Long id);    
     List<ProductDto> getProducts(int pageNo, int pageSize);
 }
