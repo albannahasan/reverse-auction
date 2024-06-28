@@ -4,6 +4,7 @@
 - Server-Side Rendering with React and Next.js
 - Frontend styled with Tailwind CSS and Emotion Styled Components
 - Automated testing suites for each microservice
+- Load-balancing for optimized performance and reliability
 ## Local Development
 ### Clone the Repository locally
 ```
