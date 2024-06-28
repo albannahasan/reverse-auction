@@ -21,24 +21,27 @@ interface Props {
 
 const ProductCard = (props: Props) => {
   return (
-    <Card className="w-[700px] bg-white shadow-md rounded-lg p-6 text-center">
-      <CardHeader className="flex items-center justify-between">
-        <div className="max-w-1/2 mx-auto">
-          <img className="max-h-6" src="" alt="" />
-        </div>
-        <div className="grid grid-cols-2 gap-x-5 gap-y-2 max-w-1/2 mx-auto bg-red-100 p-4">
-        <div>
-          <h2 className="font-semibold">Name:</h2>
-          <span>{props.itemName}</span>
-        </div>
-        <div>
-          <h2 className="font-semibold">Time Left:</h2>
-          <span>{props.itemTime}</span>
-        </div>
-        <div>
-          <h2 className="font-semibold">Price:</h2>
-          <span>{props.itemPrice}</span>
-        </div>
+    <Card className=" bg-white shadow-md rounded-lg hover:bg-gray-100">
+      <CardHeader className="flex">
+        <div className="w-50 mx-auto">
+            <img className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="https://m.media-amazon.com/images/I/714J6o2Ug7L._AC_UF1000,1000_QL80_.jpg" alt="" />
+          </div>
+          <div className=" w-full  px-8 relative">
+          <div>
+            <h2 className="font-semibold text-lg">{props.itemName}PNY NVIDIA GeForce RTX 4060 Ti 16GB Verto Dual</h2>
+            <h3>Very Good - Refurbished PNY</h3>
+          </div>
+        
+          <div className="grid grid-cols-2 max-h-80">
+              <div className="">
+                  <h2 className="font-semibold">{props.itemPrice}</h2>
+                  <p>{props.bid.length} Bids</p>
+              </div>
+              <div className="">
+                  <h2 className="font-semibold">4h 29m left</h2>
+              </div>
+          </div>
+
         </div>
       </CardHeader>
     </Card>

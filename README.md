@@ -1,6 +1,9 @@
-# reverse-auction
-Reverse auction application
+<h1 align="center">A Full Stack Auction Website</h1>
 
+## Features
+- Server-Side Rendering with React and Next.js
+- Frontend styled with Tailwind CSS and Emotion Styled Components
+- Automated testing suites for each microservice
 ## Local Development
 ### Clone the Repository locally
 ```
@@ -16,3 +19,8 @@ git clone https://github.com/albannablade123/reverse-auction.git
  - [Spring Data JPA](https://spring.io/projects/spring-data-jpa) repository abstractions
  - [Resilience4j](https://resilience4j.readme.io/docs/getting-started) lightweight fault tolerance library designed for functional programming
  - [Mockito]
+
+ ### Front-end
+ - [React](https://react.dev/)  Frontend framework
+ - [NextJS](https://nextjs.org/)  React framework that enables server-side rendering
+ - [Tailwind CSS](https://tailwindcss.com/) A utility-first CSS framework 
