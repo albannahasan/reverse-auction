@@ -13,10 +13,7 @@ interface Props {
   itemTime: string
   itemPrice: number
   bid: Bid[]
-//   setValue: Dispatch<SetStateAction<string>>
-//   setItemName: Dispatch<SetStateAction<string>>
-//   setItemTime: Dispatch<SetStateAction<string>>
-//   setItemPrice: Dispatch<SetStateAction<number>>
+  condition: string
 }
 
 const ProductCard = (props: Props) => {
@@ -28,8 +25,8 @@ const ProductCard = (props: Props) => {
           </div>
           <div className=" w-full  px-8 relative">
           <div>
-            <h2 className="font-semibold text-lg">{props.itemName}PNY NVIDIA GeForce RTX 4060 Ti 16GB Verto Dual</h2>
-            <h3>Very Good - Refurbished PNY</h3>
+            <h2 className="font-semibold text-lg">{props.itemName}</h2>
+            <h3>{props.condition}</h3>
           </div>
         
           <div className="grid grid-cols-2 max-h-80">

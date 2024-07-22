@@ -3,6 +3,8 @@ package com.hasan.productservice.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.hasan.productservice.Enum.Condition;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,7 @@ public class ProductDto {
     private String description;
     private Long price;
     private List<String> images;
+    private Condition condition;
     private LocalDateTime createdDate;
 
 }

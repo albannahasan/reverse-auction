@@ -7,16 +7,20 @@ import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.hasan.productservice.Base.Auditable;
+import com.hasan.productservice.Enum.Condition;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -50,6 +54,13 @@ public class Product extends Auditable{
     @CollectionTable(name = "images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image", nullable = false)
     private List<String> images = new ArrayList<>();
+
+    @Column(name = "bids_counter", nullable = false)
+    private Integer bidCount = 0;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "condition", nullable = false)
+    private Condition condition;
     
     @CreatedDate
     @Column(nullable = false, updatable = false)

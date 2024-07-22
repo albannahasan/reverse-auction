@@ -59,6 +59,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productDto.getPrice());
         product.setImages(productDto.getImages());
         product.setCreatedDate(productDto.getCreatedDate());
+        product.setCondition(productDto.getCondition());
         return product;
     }
 
@@ -70,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
         productDto.setPrice(product.getPrice());
         productDto.setImages(product.getImages());
         productDto.setCreatedDate(product.getCreatedDate());
+        productDto.setCondition(product.getCondition());
         return productDto;
     }
 
