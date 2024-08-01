@@ -4,6 +4,7 @@ import { getAllProductsActions } from "../lib/actions/products";
 import ProductCard from "../ui/components/ProductCard";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 
 interface Product {
   id: number;
@@ -20,9 +21,8 @@ export default function ProductList() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const products = await getAllProductsActions();
+      const products = await getAllProductsActions(5);
       console.log('Fetched products:', products); // Print products to the console
-      console.log(products)
       setProducts(products);
     };
 
@@ -36,6 +36,7 @@ export default function ProductList() {
         <div className="space-y-10 p-10">
           {products.map((product: any) => (
             <ProductCard
+              id = {product.id}
               key={product.id}
               itemName={product.name}
               itemPrice={product.price}

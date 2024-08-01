@@ -1,7 +1,7 @@
 import BidTable from "@/app/ui/components/BidTable";
 
 export default function bidDetails({ params }: {
-    params: { productId : string};
+    params: { productCId : string};
 }){
     return (
         <div className="items-center p-10">

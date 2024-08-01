@@ -1,24 +1,41 @@
 import Link from "next/link";
 import BidCard from "./BidCard";
 import ProductItemBidCard from "./ProductItemBidCard";
+import { useEffect, useState } from "react";
+import { getAllProductsActions } from "@/app/lib/actions/products";
 
-const ProductItemContent: React.FC = () => {
+interface Bid {
+  amount: number;
+  bidder: string;
+  timestamp: string;
+}
+
+interface Props {
+itemName: string
+itemTime: string
+itemPrice: number
+bid: Bid[]
+condition: string
+}
+
+const ProductItemContent = (props: Props) =>  {
+
   return (
     <div className="p-10 w-[292px] h-[595px] sm:w-[292px] sm:h-[595px] md:w-[400px] md:h-[700px] lg:w-[500px] lg:h-[800px] bg-red-600">
-      <h2 className="font-semibold font-raleway text-[36px] leading-[77%] text-[#1D1F22] mb-4">
-        Product Title Test
+      <h2 className=" truncate max-w-full font-semibold font-raleway text-[36px] leading-[77%] text-[#1D1F22] mb-4">
+        {props.itemName}
       </h2>
       <h2 className="font-normal font-raleway text-[30px] leading-[110%] text-[#1D1F22] mb-6 w-[292px] h-auto sm:w-[400px] sm:h-auto md:w-[500px] md:h-auto lg:w-[600px] lg:h-auto">
         Subtitle Text
       </h2>
       <div className="font-normal font-raleway text-[30px] leading-[77%] text-[#1D1F22] mb-6">
-        $99.99
+      {props.itemPrice}
       </div>
       <h4 className="font-normal font-raleway text-[30px] leading-[77%] text-[#1D1F22] mb-6">
-        10 bids
+        {props.bid?.length}
       </h4>
       <div className="font-normal font-raleway text-[30px] leading-[77%] text-[#1D1F22] mb-6">
-        Conditions: Open-box
+        Conditions: {props.condition}
       </div>
       <div className="mb-6">
         <div className="font-normal font-raleway text-[20px] leading-[77%] text-[#1D1F22] semi-bold mb-6">
