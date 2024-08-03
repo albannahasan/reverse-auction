@@ -14,6 +14,7 @@ import com.hasan.productservice.Exception.ProductNotFoundException;
 import com.hasan.productservice.dto.ProductDto;
 import com.hasan.productservice.repository.ProductRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -34,6 +35,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto saveProduct(ProductDto productDto) {
         Product product = mapToEntity(productDto);
+
+        return mapToDto(productRepository.save(product));
+    }
+
+    @Override
+    public ProductDto updateProduct(Long id, Product product){
+
+        Product existingProduct = productRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id ));
+        System.out.println("Internal");
+        System.out.println(product.getBids());
+        existingProduct.setBids(product.getBids());
+        System.out.println(existingProduct.toString());
 
         return mapToDto(productRepository.save(product));
     }
@@ -79,4 +93,5 @@ public class ProductServiceImpl implements ProductService {
         if (entity.isPresent()) return entity.get();
         else throw new ProductNotFoundException(id);
     }
+
 }

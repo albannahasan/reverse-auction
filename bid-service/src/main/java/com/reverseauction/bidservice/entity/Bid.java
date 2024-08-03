@@ -9,17 +9,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "bids")
 @Getter
 @Setter
+@ToString
 public class Bid {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private long productId;
 
 	@Column(nullable = false)

@@ -1,21 +1,36 @@
 package com.hasan.productservice.web;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hasan.productservice.Entity.Product;
 import com.hasan.productservice.Exception.ProductNotFoundException;
+import com.hasan.productservice.dto.BidDto;
 import com.hasan.productservice.dto.ProductDto;
 import com.hasan.productservice.service.ProductService;
+import com.hasan.productservice.service.ProductServiceImpl;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,28 +41,87 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
-
 @AllArgsConstructor
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-    
+
+    private final WebClient webClient;
     ProductService productService;
+    ProductServiceImpl productServiceImpl;
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable Long id) {
         return new ResponseEntity<>(productService.getProduct(id), HttpStatus.OK);
     }
-    
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     // @CircuitBreaker(name = "bid", fallbackMethod = "fallbackMethod")
     // @TimeLimiter(name = "bid")
     // @Retry(name = "bid")
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto product) {
-        //TODO: process POST request
-        return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // TODO: process POST request
+        System.out.println(product.getBids());
+        System.out.println("TTTTTTTTTT");
+        List<BidDto> bidToSave = product.getBids();
+        product.setBids(Collections.emptyList());
+
+        ProductDto createdProduct = productService.saveProduct(product);
+
+        Long productId = createdProduct.getId();
+        System.out.println(bidToSave);
+
+        if (bidToSave != null && !bidToSave.isEmpty()) {
+            System.out.println("A reached here");
+
+            List<Long> bids = new ArrayList<>();
+            System.out.println("B reached here");
+
+            // Create Flux from the list of bids
+            Flux<String> responseFlux = Flux.fromIterable(bidToSave)
+                    .flatMap(bid -> {
+                        bid.setProductId(productId); // Set productId for each bid
+
+                        // Call WebClient and return a Mono<String>
+                        return webClient.post()
+                                .uri("http://localhost:8085/bid")
+                                .body(BodyInserters.fromValue(bid))
+                                .retrieve()
+                                .bodyToMono(String.class);
+                    });
+
+            // Process responses and modify bids list
+            responseFlux
+                    .doOnNext(response -> {
+                        try {
+                            JsonNode jsonNode = objectMapper.readTree(response);
+                            int id = jsonNode.get("id").asInt();
+                            Long idLong = (long) id;
+
+                            synchronized (bids) {
+                                bids.add(idLong); // Use synchronization if modifying shared state
+                            }
+                        } catch (Exception e) {
+                            System.err.println("Failed to parse JSON response: " + e.getMessage());
+                        }
+                    })
+                    .doOnError(error -> System.err.println("Error: " + error.getMessage()))
+                    .doFinally(signalType -> {
+                        // Print the bids list after all responses are processed
+                        Product updatedProduct = ProductServiceImpl.mapToEntity(product);
+                        updatedProduct.setBids(bids);
+                        ProductDto result = productService.updateProduct(productId, updatedProduct);
+                        System.out.println("C reached here");
+
+                        System.out.println(result.toString());
+                    })
+                    .subscribe(); // Initiate the reactive pipeline
+        }
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+
     }
 
     @DeleteMapping("/{id}")
@@ -56,17 +130,26 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PostMapping("/{id}")
+    public String postMethodName(@RequestBody String entity) {
+        //TODO: process POST request
+
+        return entity;
+    }
+    
+
     @GetMapping("/all")
     public ResponseEntity<List<ProductDto>> getProducts(
-        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
 
-        ) {
+    ) {
         return new ResponseEntity<>(productService.getProducts(pageNo, pageSize), HttpStatus.OK);
     }
 
-    public CompletableFuture<String> fallbackMethod(Product product, RuntimeException runtimeException){
-        return CompletableFuture.supplyAsync(() -> "Oops! Something went wrong, please resend request after some time!");
+    public CompletableFuture<String> fallbackMethod(Product product, RuntimeException runtimeException) {
+        return CompletableFuture
+                .supplyAsync(() -> "Oops! Something went wrong, please resend request after some time!");
 
     }
 

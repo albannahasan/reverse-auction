@@ -3,12 +3,14 @@ package com.hasan.productservice.Entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 
 import com.hasan.productservice.Base.Auditable;
 import com.hasan.productservice.Enum.Condition;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -31,6 +33,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor 
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "products")
 public class Product extends Auditable{
@@ -65,5 +68,10 @@ public class Product extends Auditable{
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
+
+    @ElementCollection
+    @CollectionTable(name = "product_bids", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "bid")
+    private List<Long> bids;
     
 }

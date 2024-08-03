@@ -24,5 +24,5 @@ public class ProductDto {
     private List<String> images;
     private Condition condition;
     private LocalDateTime createdDate;
-
+    private List<BidDto> bids;
 }

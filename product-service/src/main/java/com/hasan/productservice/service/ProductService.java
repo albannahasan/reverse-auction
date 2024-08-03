@@ -9,5 +9,6 @@ public interface ProductService {
     Product getProduct(Long id);
     ProductDto saveProduct(ProductDto product);
     void deleteProduct(Long id);    
+    ProductDto updateProduct(Long id, Product produc);
     List<ProductDto> getProducts(int pageNo, int pageSize);
 }
