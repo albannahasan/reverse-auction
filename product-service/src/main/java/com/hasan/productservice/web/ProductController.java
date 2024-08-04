@@ -28,10 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,14 +41,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/product")
+
 public class ProductController {
 
     private final WebClient webClient;
+
+    @Autowired
     ProductService productService;
+
+    @Autowired
     ProductServiceImpl productServiceImpl;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
         return new ResponseEntity<>(productService.getProduct(id), HttpStatus.OK);
     }
 
@@ -63,65 +65,51 @@ public class ProductController {
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto product) {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        // TODO: process POST request
-        System.out.println(product.getBids());
-        System.out.println("TTTTTTTTTT");
-        List<BidDto> bidToSave = product.getBids();
-        product.setBids(Collections.emptyList());
+    List<BidDto> bidToSave = product.getBids();
+    product.setBids(Collections.emptyList());
 
-        ProductDto createdProduct = productService.saveProduct(product);
+    // Step 1: Save the product without bids
+    ProductDto createdProduct = productService.saveProduct(product);
+    Long productId = createdProduct.getId();
 
-        Long productId = createdProduct.getId();
-        System.out.println(bidToSave);
+    if (bidToSave != null && !bidToSave.isEmpty()) {
+        List<Long> bids = new ArrayList<>();
 
-        if (bidToSave != null && !bidToSave.isEmpty()) {
-            System.out.println("A reached here");
+        // Create Flux from the list of bids
+        Flux<String> responseFlux = Flux.fromIterable(bidToSave)
+                .flatMap(bid -> {
+                    bid.setProductId(productId); // Set productId for each bid
+                    // Call WebClient and return a Mono<String>
+                    return webClient.post()
+                            .uri("http://localhost:8085/bid")
+                            .body(BodyInserters.fromValue(bid))
+                            .retrieve()
+                            .bodyToMono(String.class);
+                });
 
-            List<Long> bids = new ArrayList<>();
-            System.out.println("B reached here");
+        // Block and wait for all responses
+        List<String> responses = responseFlux.collectList().block();
 
-            // Create Flux from the list of bids
-            Flux<String> responseFlux = Flux.fromIterable(bidToSave)
-                    .flatMap(bid -> {
-                        bid.setProductId(productId); // Set productId for each bid
-
-                        // Call WebClient and return a Mono<String>
-                        return webClient.post()
-                                .uri("http://localhost:8085/bid")
-                                .body(BodyInserters.fromValue(bid))
-                                .retrieve()
-                                .bodyToMono(String.class);
-                    });
-
-            // Process responses and modify bids list
-            responseFlux
-                    .doOnNext(response -> {
-                        try {
-                            JsonNode jsonNode = objectMapper.readTree(response);
-                            int id = jsonNode.get("id").asInt();
-                            Long idLong = (long) id;
-
-                            synchronized (bids) {
-                                bids.add(idLong); // Use synchronization if modifying shared state
-                            }
-                        } catch (Exception e) {
-                            System.err.println("Failed to parse JSON response: " + e.getMessage());
-                        }
-                    })
-                    .doOnError(error -> System.err.println("Error: " + error.getMessage()))
-                    .doFinally(signalType -> {
-                        // Print the bids list after all responses are processed
-                        Product updatedProduct = ProductServiceImpl.mapToEntity(product);
-                        updatedProduct.setBids(bids);
-                        ProductDto result = productService.updateProduct(productId, updatedProduct);
-                        System.out.println("C reached here");
-
-                        System.out.println(result.toString());
-                    })
-                    .subscribe(); // Initiate the reactive pipeline
+        if (responses != null) {
+            for (String response : responses) {
+                try {
+                    JsonNode jsonNode = objectMapper.readTree(response);
+                    int id = jsonNode.get("id").asInt();
+                    Long idLong = (long) id;
+                    bids.add(idLong);
+                } catch (Exception e) {
+                    System.err.println("Failed to parse JSON response: " + e.getMessage());
+                }
+            }
         }
-        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
 
+        // Step 2: Update product with bids
+        Product productEntity = ProductServiceImpl.mapToEntity(createdProduct);
+        productEntity.setBids(new ArrayList<>(bids)); // Defensive copy
+        createdProduct = productService.updateProduct(productId, productEntity);
+    }
+
+    return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -129,14 +117,6 @@ public class ProductController {
         productService.deleteProduct(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    @PostMapping("/{id}")
-    public String postMethodName(@RequestBody String entity) {
-        //TODO: process POST request
-
-        return entity;
-    }
-    
 
     @GetMapping("/all")
     public ResponseEntity<List<ProductDto>> getProducts(
