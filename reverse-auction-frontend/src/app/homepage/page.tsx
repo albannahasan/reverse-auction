@@ -15,7 +15,7 @@ export default function Homepage() {
   
     return (
       <main>
-        <Navbar/>
+
         <div className="flex flex-col items-center">
           <h1 className="text-center mb-4">Popular Items</h1>
           <div className="mb-4">

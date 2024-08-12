@@ -1,5 +1,4 @@
 'use client'
-import Navbar from "../components/global/navbar";
 import { getAllProductsActions } from "../lib/actions/products";
 import ProductCard from "../ui/components/ProductCard";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
@@ -30,7 +29,6 @@ export default function ProductList() {
   }, []);
   return (
     <>
-      <Navbar />
       <div className="m-4 p-4  flex flex-col rounded-lg shadow-lg w-full space-x-8 justify-center">
         <h1>Product List2</h1>
         <div className="space-y-10 p-10">

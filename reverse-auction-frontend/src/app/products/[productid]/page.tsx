@@ -41,7 +41,7 @@ export default function ProductDetails({
   }
 
   return (
-    <div className="flex flex-row items-center p-10">
+    <div className="flex flex-row items-center">
       <PicturePanelContainer />
       <ProductItemContent
         key={product.id}

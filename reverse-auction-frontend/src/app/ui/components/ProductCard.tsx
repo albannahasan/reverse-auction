@@ -29,9 +29,9 @@ const ProductCard = (props: Props) => {
     router.push(`/products/${id}`);
   }
   return (
-    <Card  className=" bg-white shadow-md rounded-lg hover:bg-red">
+    <Card  className=" bg-white shadow-md rounded-lg hover:bg-red mx-20">
       <CardHeader className="flex" onClick={(e) => goToProductDetail(props.id,e)}>
-        <div className="w-50 mx-auto">
+        <div className="p-10 w-50 mx-auto p-10">
             <img className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="https://m.media-amazon.com/images/I/714J6o2Ug7L._AC_UF1000,1000_QL80_.jpg" alt="" />
           </div>
           <div className=" w-full  px-8 relative">

@@ -24,7 +24,7 @@ interface NavLink {
 export default function Navbar() {
 
   return (
-      <header className="text-sm py-2 md:px-16 px-6 border-b-0.5 dark:border-zinc-800 border-zinc-200 z-30 md:mb-12 mb-10">
+      <header className="text-sm py-1 md:px-16 px-6 border-b-0.5 dark:border-zinc-800 border-zinc-200 z-30 md:mb-3 bg-red-600">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/">
             {/* <Image src={Logo} width={35} height={35} alt="logo" /> */}
