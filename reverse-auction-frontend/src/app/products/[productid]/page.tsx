@@ -44,6 +44,7 @@ export default function ProductDetails({
     <div className="flex flex-row items-center">
       <PicturePanelContainer />
       <ProductItemContent
+        description={product.description}
         key={product.id}
         itemName={product.name}
         itemTime={product.createdDate}

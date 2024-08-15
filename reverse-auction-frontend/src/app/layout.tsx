@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/global/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
+import { NextUIProvider } from "@nextui-org/react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,10 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Navbar />
-        {children}
-      </body>
+        <body className={inter.className}>
+          <Navbar />
+          {children}
+        </body>
     </html>
   );
 }

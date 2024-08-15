@@ -6,10 +6,15 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/components/(card|ripple).js"
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+
   ],
   theme: {
     extend: {
+      colors: {
+        primary: "#e5771e",
+        secondary: "#f4a127"
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
