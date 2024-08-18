@@ -101,7 +101,7 @@ public class ProductServiceTest {
             .build();
         when(productRepository.findById(productId)).thenReturn(Optional.ofNullable(product));
 
-        Product productReturn = productService.getProduct(productId);
+        ProductDto productReturn = productService.getProduct(productId);
 
         Assertions.assertThat(productReturn).isNotNull();
     }

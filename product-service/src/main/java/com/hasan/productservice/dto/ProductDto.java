@@ -25,4 +25,6 @@ public class ProductDto {
     private Condition condition;
     private LocalDateTime createdDate;
     private List<BidDto> bids;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }

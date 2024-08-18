@@ -17,6 +17,7 @@ interface Props {
   bid: Bid[]
   condition: string
   description: string
+
 }
 
 const ProductCard = (props: Props) => {

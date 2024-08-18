@@ -65,6 +65,9 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setCreatedDate(product.getCreatedDate());
         existingProduct.setImages(new ArrayList<>(product.getImages())); // Defensive copy for images
         existingProduct.setBids(new ArrayList<>(product.getBids())); // Defensive copy for bids
+        existingProduct.setStartTime(product.getStartTime());
+        existingProduct.setStartTime(product.getEndTime());
+
     
     
         // Save the updated product
@@ -96,6 +99,8 @@ public class ProductServiceImpl implements ProductService {
         product.setImages(productDto.getImages());
         product.setCreatedDate(productDto.getCreatedDate());
         product.setCondition(productDto.getCondition());
+        product.setStartTime(productDto.getStartTime());
+        product.setEndTime(productDto.getEndTime());
         if (productDto.getImages() != null) {
             product.setImages(new ArrayList<>(productDto.getImages()));
         }
@@ -119,6 +124,8 @@ public class ProductServiceImpl implements ProductService {
         productDto.setImages(product.getImages());
         productDto.setCreatedDate(product.getCreatedDate());
         productDto.setCondition(product.getCondition());
+        productDto.setStartTime(product.getStartTime());
+        productDto.setEndTime(product.getEndTime());
         return productDto;
     }
 

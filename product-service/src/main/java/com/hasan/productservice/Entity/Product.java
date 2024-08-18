@@ -69,6 +69,12 @@ public class Product extends Auditable{
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
+    @Column(nullable = false)
+    private LocalDateTime startTime;
+
+    @Column(nullable = false)
+    private LocalDateTime endTime;
+
     @ElementCollection
     @CollectionTable(name = "product_bids", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "bid")

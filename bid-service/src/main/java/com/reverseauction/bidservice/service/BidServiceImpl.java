@@ -44,8 +44,6 @@ public class BidServiceImpl implements BidService {
         // kafkaTemplate.send("notificationTopic", new BidPlacedEvent(bid.getBidNumber()));
         String uriTemplate = "http://product-service/product/{id}";
 
-        System.out.println(bid.toString());
-
         Mono<ProductResponseDto> productMono = webClientBuilder.build().get()
             .uri(uriTemplate, bid.getProductId())
             .retrieve()

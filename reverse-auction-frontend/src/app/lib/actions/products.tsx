@@ -23,10 +23,7 @@ export async function getAllProductsActions(pageSize:Number) {
 
   export async function getProductById(id: Number) {
     try {
-      console.log('HERE HERE');
-      console.log(id);
-      
-      
+
       const response = await fetch(`http://localhost:8085/product/${id}`, {
         method: "GET",
         mode: 'no-cors',
