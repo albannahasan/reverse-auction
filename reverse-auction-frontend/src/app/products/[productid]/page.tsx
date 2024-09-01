@@ -12,6 +12,7 @@ interface Product {
   createdDate: string;
   images: string[];
   condition: string;
+  endTime: string;
 }
 
 export default function ProductDetails({
@@ -50,6 +51,7 @@ export default function ProductDetails({
         itemTime={product.createdDate}
         itemPrice={product.price}
         condition={product.condition}
+        endTime={product.endTime}
         bid={[]}
       />
     </div>

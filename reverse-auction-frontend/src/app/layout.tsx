@@ -5,6 +5,7 @@ import Navbar from "./components/global/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 import { NextUIProvider } from "@nextui-org/react";
+import Footer from "./components/global/footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,6 +22,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <Navbar />
           {children}
+          <Footer/> 
         </body>
     </html>
   );

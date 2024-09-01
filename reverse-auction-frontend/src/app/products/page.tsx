@@ -261,6 +261,8 @@ export default function ProductList() {
                   bid={[]}
                   condition={product.condition}
                   description={product.description}
+                  endTime={product.endTime}
+                  startTime={product.startTime}
                 />
               ))
             )}
