@@ -4,5 +4,5 @@ public enum Condition {
     VERY_GOOD,
     GOOD,
     FAIR,
-    POOR
+    POOR, USED
 }

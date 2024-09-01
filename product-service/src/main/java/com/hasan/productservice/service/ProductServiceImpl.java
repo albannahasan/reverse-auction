@@ -1,5 +1,6 @@
 package com.hasan.productservice.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +22,7 @@ import com.hasan.productservice.dto.ProductDto;
 import com.hasan.productservice.repository.ProductRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 
@@ -101,6 +104,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCondition(productDto.getCondition());
         product.setStartTime(productDto.getStartTime());
         product.setEndTime(productDto.getEndTime());
+        product.setClosed(productDto.isClosed());
         if (productDto.getImages() != null) {
             product.setImages(new ArrayList<>(productDto.getImages()));
         }
@@ -126,6 +130,7 @@ public class ProductServiceImpl implements ProductService {
         productDto.setCondition(product.getCondition());
         productDto.setStartTime(product.getStartTime());
         productDto.setEndTime(product.getEndTime());
+        productDto.setClosed(product.isClosed());
         return productDto;
     }
 
@@ -179,6 +184,19 @@ public class ProductServiceImpl implements ProductService {
         }
         return result;
 
+    }
+
+
+    @Scheduled(fixedRate = 60000) // Check every minute
+    @Transactional
+    public void checkAndCloseExpiredProducts() {
+        List<Product> expiredProducts = productRepository.findByIsClosedFalseAndEndTimeBefore(LocalDateTime.now());
+
+        for (Product product : expiredProducts) {
+            product.close();  // Mark the product as closed
+            productRepository.save(product);  // Update the product in the database
+            System.out.println("Product " + product.getName() + " has been closed due to expiration.");
+        }
     }
 
 }

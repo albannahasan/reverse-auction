@@ -79,5 +79,17 @@ public class Product extends Auditable{
     @CollectionTable(name = "product_bids", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "bid")
     private List<Long> bids;
+
+
+    @Column(name = "is_closed", nullable = false)
+    private boolean isClosed = false;  // New field to track if the product is closed
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(endTime);
+    }
+
+    public void close() {
+        this.isClosed = true;
+    }
     
 }

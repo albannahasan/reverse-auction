@@ -27,4 +27,5 @@ public class ProductDto {
     private List<BidDto> bids;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private boolean isClosed;
 }

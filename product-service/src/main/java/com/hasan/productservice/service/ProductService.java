@@ -11,4 +11,5 @@ public interface ProductService {
     void deleteProduct(Long id);    
     ProductDto updateProduct(Long id, Product produc);
     List<ProductDto> getProducts(int pageNo, int pageSize);
+    void checkAndCloseExpiredProducts();
 }
