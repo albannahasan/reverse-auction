@@ -1,12 +1,12 @@
 import BidTable from "@/app/ui/components/BidTable";
 
 export default function bidDetails({ params }: {
-    params: { productCId : string};
+    params: { productId : string};
 }){
     return (
         <div className="items-center p-10">
             <h2>Bid History</h2>
-            <BidTable/>
+            <BidTable id={params.productId}/>
         </div>
     )
 }

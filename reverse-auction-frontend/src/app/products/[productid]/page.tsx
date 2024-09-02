@@ -13,6 +13,7 @@ interface Product {
   images: string[];
   condition: string;
   endTime: string;
+  startTime: string;
 }
 
 export default function ProductDetails({
@@ -45,12 +46,13 @@ export default function ProductDetails({
     <div className="flex flex-row items-center">
       <PicturePanelContainer />
       <ProductItemContent
+        id={product.id}
         description={product.description}
-        key={product.id}
         itemName={product.name}
         itemTime={product.createdDate}
         itemPrice={product.price}
         condition={product.condition}
+        startTime={product.startTime}
         endTime={product.endTime}
         bid={[]}
       />

@@ -15,6 +15,7 @@ interface Bid {
 }
 
 interface Props {
+  id: number;
   itemName: string;
   itemTime: string;
   itemPrice: number;
@@ -32,6 +33,8 @@ export const parseDateString = (dateString: string): Date => {
 const ProductItemContent = (props: Props) => {
   const [number, setNumber] = useState("");
   const [status, setStatus] = useState<string>("");
+
+  console.log("CHECK2", props.id)
 
   useEffect(() => {
     const calculateTimeDifference = () => {
@@ -136,7 +139,7 @@ const ProductItemContent = (props: Props) => {
           modi, dicta laudantium animi maiores!
         </p>
       </div>
-      <LatestBids />
+      <LatestBids productId={props.id} />
     </div>
   );
 };

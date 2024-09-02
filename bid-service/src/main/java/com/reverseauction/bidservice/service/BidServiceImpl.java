@@ -80,9 +80,19 @@ public class BidServiceImpl implements BidService {
     public List<BidDto> getBids(int pageNo, int pageSize) {
         PageRequest pageable = PageRequest.of(pageNo, pageSize);
         Page<Bid> products = bidRepository.findAll(pageable);
-        List<Bid> listOfProduct = products.getContent();
+        List<Bid> listOfBids = products.getContent();
 
-        return listOfProduct.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
+        return listOfBids.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<BidDto> getBidsByProductId(Long id, int pageNo, int pageSize) {
+        PageRequest pageable = PageRequest.of(pageNo, pageSize);
+        Page<Bid> products = bidRepository.findByProductId(id, pageable);
+        List<Bid> listOfBids = products.getContent();
+
+        return listOfBids.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
     }
 
     // @Override
@@ -107,6 +117,9 @@ public class BidServiceImpl implements BidService {
         bidDTO.setId(bid.getId());
         bidDTO.setProductId(bid.getProductId());
         bidDTO.setPrice(bid.getPrice());
+        bidDTO.setStatus(bid.getStatus());
+        bidDTO.setCreatedAt(bid.getCreatedAt()); // Setting the created time
+        bidDTO.setUpdatedAt(bid.getUpdatedAt()); // Setting the updated time
         return bidDTO;
     }
     

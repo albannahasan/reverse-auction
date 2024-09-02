@@ -34,11 +34,11 @@ public class bidController {
     public ResponseEntity<Bid> getBid(@PathVariable Long id) {
         return new ResponseEntity<>(bidService.getBid(id), HttpStatus.OK);
     }
-    
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Bid> createBid(@Valid @RequestBody Bid bid) {
-        //TODO: process POST request
+        // TODO: process POST request
         try {
             Bid createdBid = bidService.saveBid(bid).block(); // Block to wait for completion
             return ResponseEntity.status(HttpStatus.CREATED).body(createdBid);
@@ -57,8 +57,8 @@ public class bidController {
 
     @GetMapping("/all")
     public ResponseEntity<List<BidDto>> getBids(
-        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
 
     ) {
         return new ResponseEntity<>(bidService.getBids(pageNo, pageSize), HttpStatus.OK);
@@ -68,4 +68,13 @@ public class bidController {
     public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @GetMapping("/by-product/{id}")
+    public ResponseEntity<List<BidDto>> getBidsByProductId(@PathVariable Long id,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        return new ResponseEntity<>(bidService.getBidsByProductId(id, pageNo, pageSize), HttpStatus.OK);
+
+    }
+
 }

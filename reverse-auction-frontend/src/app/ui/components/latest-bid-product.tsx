@@ -2,7 +2,9 @@ import React from 'react';
 import Link from 'next/link';  // Adjust the import based on your routing setup
 import ProductItemBidCard from './ProductItemBidCard';  // Ensure the path to the component is correct
 
-const LatestBids = () => {
+
+const LatestBids = ({ productId }) => {
+  const link = `/bids/${productId}`
   return (
     <div className="bg-yellow-500 p-6 m-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto">
       <h3 className="text-2xl font-semibold mb-6 text-gray-800">
@@ -14,7 +16,7 @@ const LatestBids = () => {
         <ProductItemBidCard />
       </div>
       <div className="flex justify-center mt-6">
-        <Link href="/bids/1">
+        <Link href={link}>
             <button className="bg-black hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
               See All Bids
             </button>
