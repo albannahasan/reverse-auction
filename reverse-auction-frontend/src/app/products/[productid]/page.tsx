@@ -3,6 +3,8 @@ import PicturePanelContainer from "@/app/ui/components/PicturePanelContainer";
 import ProductItemContent from "@/app/ui/components/ProductItemContent";
 import { useEffect, useState } from "react";
 import { getProductById } from "../../lib/actions/products";
+import ProductItemDescription from "@/app/ui/components/ProductItemDescription";
+import LatestBids from "@/app/ui/components/latest-bid-product";
 
 interface Product {
   id: number;
@@ -43,7 +45,7 @@ export default function ProductDetails({
   }
 
   return (
-    <div className="flex flex-row items-center">
+    <div className="grid grid-cols-[3fr_1fr] gap-8 items-start px-8 py-4">
       <PicturePanelContainer />
       <ProductItemContent
         id={product.id}
@@ -56,6 +58,8 @@ export default function ProductDetails({
         endTime={product.endTime}
         bid={[]}
       />
+      <ProductItemDescription description={product.description}/>
+      <LatestBids productId={product.id} />
     </div>
   );
 }

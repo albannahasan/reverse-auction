@@ -3,7 +3,7 @@ import HomepageProductCard from './HomepageProductCard';
 
 const PicturePanelContainer: React.FC = () => {
   return (
-    <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-8 rounded-lg shadow-lg justify-center bg-cyan-700">
+    <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-8 rounded-lg shadow-lg justify-center bg-cyan-700 min-w-full w-120">
         <div className="w-20 text-white overflow-overlay h-[550px]">
             
         </div>

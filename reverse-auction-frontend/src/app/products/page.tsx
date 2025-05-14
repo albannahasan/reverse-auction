@@ -221,7 +221,7 @@ export default function ProductList() {
 
   return (
     <>
-      <div className="m-4 p-4  flex flex-col rounded-lg shadow-lg w-full space-x-8 justify-center h-full">
+      <div className="m-4 p-4  flex flex-col rounded-lg shadow-lg space-x-8 justify-center h-full w-full">
         <div className="grid grid-cols-6 gap-3 p-3">
           <div className="bg-white col-span-1">
             <FilterTable
