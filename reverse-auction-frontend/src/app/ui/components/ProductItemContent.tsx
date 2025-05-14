@@ -34,7 +34,7 @@ const ProductItemContent = (props: Props) => {
   const [number, setNumber] = useState("");
   const [status, setStatus] = useState<string>("");
 
-  console.log("CHECK2", props.id)
+  console.log("CHECK2", props.id);
 
   useEffect(() => {
     const calculateTimeDifference = () => {
@@ -69,25 +69,24 @@ const ProductItemContent = (props: Props) => {
   };
 
   return (
-    <div className="p-10 w-[350px] h-[700px] sm:w-[292px] sm:h-[595px] md:w-[600px] md:h-[700px] lg:w-[500px] lg:h-[900px] bg-slate-50 overflow-y-auto">
-      <h2 className="line-clamp-2 max-w-full font-semibold font-raleway text-[36px] leading-[1.2] text-[#1D1F22] mb-4">
+    <div className="p-7 w-[350px] h-[700px] sm:w-[292px] sm:h-[595px] md:w-[1024px] md:h-[700px] lg:w-[500px] lg:h-[900px] bg-slate-50 overflow-y-auto rounded-lg shadow-md">
+      <h2 className="line-clamp-2 max-w-full font-bold text-2xl text-[36px] leading-[1.2] text-[#1D1F22] mb-2">
         {props.itemName}
       </h2>
 
-      <hr className="w-full border-t border-gray-900 mt-4 mb-4" />
-      <div className="grid grid-cols-2 justify-items-center items-center ">
-        <div className="font-normal font-raleway rounded-lg shadow-md text-[#1D1F22] flex items-center justify-center min-h-[4rem] min-w-40 max-w-50 ">
-          ${props.itemPrice.toFixed(2)}
-        </div>
-        <div className="font-normal font-raleway rounded-lg shadow-md text-[1.5vw] text-[#1D1F22] flex items-center min-h-[4rem] min-w-40 max-w-40 max-w-50 justify-center">
-          Bids:
-          <span className="ml-2">{props.bid?.length}</span>
-        </div>
-        <div className="font-normal font-raleway rounded-lg shadow-md  text-[20px] leading-[77%] text-[#1D1F22] mb-6 p-4 max-w-50 ">
-          <div>Conditions:</div>
-          <div className="mt-2">
-            {props.condition ? props.condition : "No conditions specified"}
+      <div className="flex justify-between items-center ">
+        <div className="block text-[#1D1F22] ">
+          <p className="font-black text-sm font-normal">Current Bid</p>
+          <div className="font-bold font-raleway text-2xl ">
+            ${props.itemPrice.toFixed(2)}
           </div>
+        </div>
+
+        <div className="font-normal font-raleway  ">
+          <p className="text-gray-500 text-[0.875rem]">Bids</p>
+          <span className="ml-2 text-lg font-semibold text-[#1D1F22]">
+            {props.bid?.length}
+          </span>
         </div>
       </div>
 
@@ -105,21 +104,24 @@ const ProductItemContent = (props: Props) => {
         </div>
         <hr className="w-full border-t border-gray-900 mt-4 mb-4" />
         {status == "Ongoing" ? (
-          <form onSubmit={handleSubmit} className="p-4 w-full ">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full flex gap-2"
+          >
             <div className="mb-4">
               <input
                 type="number"
                 id="number"
                 value={number}
                 onChange={(e) => setNumber(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="pl-6 py-2 px-3 rounded-md h-10 w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter number"
                 required
               />
             </div>
             <button
               type="submit"
-              className="bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              className="text-gray-700 text-white font-medium py-2 px-4 rounded-md h-10 bg-black "
             >
               Place Bid
             </button>
@@ -128,8 +130,12 @@ const ProductItemContent = (props: Props) => {
           <div></div>
         )}
       </div>
-      <hr className="w-full border-t border-gray-900 my-3" />
-
+      <div className="font-normal font-raleway rounded-lg shadow-md  text-[20px] leading-[77%] text-[#1D1F22] mb-6 p-4 max-w-50 ">
+        <div>Conditions:</div>
+        <div className="mt-2">
+          {props.condition ? props.condition : "No conditions specified"}
+        </div>
+      </div>
       <div className=" text-gray-700 mx-4 text-justify">
         <h4 className="font-semibold mb-2">Item Description:</h4>
         <p>
