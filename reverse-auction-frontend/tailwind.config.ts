@@ -12,6 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        bluishGray: 'hsl(240, 11.11%, 96.47%)',
         primary: "#e5771e",
         secondary: "#f4a127",
         darkPrimary: "#d34f1f", // Custom dark mode primary color

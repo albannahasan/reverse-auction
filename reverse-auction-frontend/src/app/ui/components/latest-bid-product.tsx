@@ -18,7 +18,7 @@ const BidCard = ({ user, amount, time }: BidCardProps) => {
         <h4 className="text-lg text-black font-semibold">{user}</h4>
         <p className="text-gray-600 text-xs">{formattedTime}</p>
       </div>
-      <p className="text-gray-600 font-semibold">${amount.toFixed(2)}</p>
+      <p className="text-gray-600 font-semibold">${typeof amount === "number" ? amount.toFixed(2) : parseFloat(amount).toFixed(2)}</p>
     </div>
   );
 };

@@ -8,15 +8,15 @@ interface NavLink {
 
   const data: NavLink[] = [
     {
-        title: "Home",
-        href: "/homepage",
+        title: "products",
+        href: "/products",
     },
     {
       title: "About",
       href: "/about",
     },
     {
-      title: "Auction Lot",
+      title: "Cart",
       href: "/products",
     },
   ];
@@ -24,13 +24,14 @@ interface NavLink {
 export default function Navbar() {
 
   return (
-      <header className="text-sm py-1 md:px-16 px-6 border-b-0.5 dark:border-zinc-800 border-zinc-200 z-30 md:mb-3 bg-red-600">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/">
-            {/* <Image src={Logo} width={35} height={35} alt="logo" /> */}
+      <header className="text-sm py-4 mx-auto md:px-16 px-6 border-b-0.5 dark:border-zinc-800z-30 bg-white md:mb-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between ">
+          <Link href="/homepage">
+              LOGO HERE
           </Link>
 
           <nav className="md:block hidden">
+           
             <ul className="flex items-center gap-x-8">
               {data.map((link, id) => (
                 <li key={id}>
@@ -45,8 +46,6 @@ export default function Navbar() {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-x-4">
-          </div>
         </div>
       </header>
   );

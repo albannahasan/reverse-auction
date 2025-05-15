@@ -1,36 +1,29 @@
-
-import {Card, CardHeader, CardBody, CardFooter} from "@nextui-org/card";
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import BidCard from "./BidCard";
 import HomepageInfoCard from "./HomepageInfoCard";
 
 type Props = {
-  placeholder?: string,
-}
+  placeholder?: string;
+};
 
-export default function HomeCard(){
-
+export default function HomeCard() {
   return (
-    <Card className="max-w-[1500px]">
-      <CardHeader className="justify-between flex flex-col items-start">
-        <div className="max-w-[50%] flex gap-5p-5">
-            <div className="max-w-[50%] flex flex-row gap-1 items-start justify-center ">
-                <img className="max-w-[100%]" src=""></img>
-            </div>
-            <div className="flex flex-col gap-1 items-star w-full h-full">
-                <div className="flex flex-col gap-5 p-4 ">
-                  <HomepageInfoCard/>
-                </div>
-                <div className="flex flex-col gap-5 p-4 ">
-                  <h3 className="p-4 font-semibold leading-none text-default-900">Latest Bids</h3>
-                  <div className="p-4 flex flex-row rounded-lg shadow-lg space-x-8 justify-center">
-                    <BidCard/>
-                    <BidCard/>
-                    <BidCard/>
-                  </div>
-                </div>
-            </div>
-        </div>
+    <Card className="min-h-96 bg-bluishGray">
+      <CardHeader className="justify-between flex flex-col items-start bg-bluishGray">
+        <section className="max-w-3xl py-20 ">
+          <h1 className="font-bold text-4xl mb-6">
+            Find Unique Items, Bid with Confidence
+          </h1>
+          <p className="text-lg text-gray-700 mb-8">
+            Discover a world of unique items and bid with confidence. Our
+            platform connects buyers and sellers, ensuring a seamless auction
+            experience.
+            </p>
+
+        </section>
+
+
       </CardHeader>
     </Card>
-  )
+  );
 }
