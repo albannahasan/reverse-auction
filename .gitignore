@@ -5,3 +5,7 @@ maven-*
 /target/classes/
 /.mvn/*
 /msql_keycloak_data
+/reverse-auction-frontend/node_modules/*
+/reverse-auction-frontend/build/
+/reverse-auction-frontend/.env
+/reverse-auction-frontend/.next/*
