@@ -1,4 +1,4 @@
-package com.reverseauction.userservice.controller;
+package com.reverseauction.cartservice.controller;
 
 import java.util.List;
 
@@ -15,50 +15,53 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.reverseauction.userservice.dto.UserDto;
-import com.reverseauction.userservice.entity.User;
-import com.reverseauction.userservice.exception.ProductNotFoundException;
-import com.reverseauction.userservice.service.UserService;
+import com.reverseauction.cartservice.dto.CartDto;
+import com.reverseauction.cartservice.entity.Cart;
+import com.reverseauction.cartservice.exception.ProductNotFoundException;
+import com.reverseauction.cartservice.service.CartService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/user")
-public class userController {
+@RequestMapping("/cart")
+public class CartController {
 
-    UserService userService;
+    CartService cartService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
+    public ResponseEntity<Cart> getCart(@PathVariable Long id) {
+        return new ResponseEntity<>(cartService.getCart(id), HttpStatus.OK);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<CartDto> createCart(@Valid @RequestBody Cart cart) {
+        // TODO: process POST request
         try {
-            User createdUser = userService.saveUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+            CartDto savedCartDto = cartService.saveCart(cart);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedCartDto);
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<HttpStatus> deleteCart(@PathVariable Long id) {
+        cartService.deleteCart(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserDto>> getUsers(
+    public ResponseEntity<List<CartDto>> getCarts(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
 
     ) {
-        return new ResponseEntity<>(userService.getUsers(pageNo, pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(cartService.getCarts(pageNo, pageSize), HttpStatus.OK);
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
@@ -66,12 +69,5 @@ public class userController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-    // @GetMapping("/by-product/{id}")
-    // public ResponseEntity<List<UserDto>> getUsersByProductId(@PathVariable Long id,
-    //         @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-    //         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
-    //     return new ResponseEntity<>(userService.getUsersByProductId(id, pageNo, pageSize), HttpStatus.OK);
-
-    // }
 
 }

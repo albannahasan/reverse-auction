@@ -11,5 +11,5 @@ public interface UserService {
     void deleteUser(Long id);    
     // User updateUser(Double amount, Long id, Long userId, Long productId);
     List<UserDto> getUsers(int pageNo, int pageSize);
-    List<UserDto> getUsersByProductId(Long id, int pageNo, int pageSize);
+
 }

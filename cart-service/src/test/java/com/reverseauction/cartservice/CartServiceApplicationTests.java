@@ -1,10 +1,10 @@
-package com.reverseauction.bidservice;
+package com.reverseauction.cartservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UserServiceApplicationTests {
+class CartServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -50,14 +50,6 @@ public class UserServiceImpl implements UserService {
         return listOfUsers.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
     }
 
-    @Override
-    public List<UserDto> getUsersByProductId(Long id, int pageNo, int pageSize) {
-        PageRequest pageable = PageRequest.of(pageNo, pageSize);
-        Page<User> products = userRepository.findByProductId(id, pageable);
-        List<User> listOfUsers = products.getContent();
-
-        return listOfUsers.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
-    }
 
     // @Override
     // public User updateUser(Double amount, Long id, Long userId, Long productId) {

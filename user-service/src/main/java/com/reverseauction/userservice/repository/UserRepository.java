@@ -10,6 +10,5 @@ import com.reverseauction.userservice.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     // Optional<User> findByUserIdAndproductId(Long userId, Long productId);
-    Page<User> findByProductId(Long id, PageRequest pageable);
 
 }
