@@ -9,7 +9,6 @@ export async function getBidsByProductId(id: Number) {
           "Content-Type": "application/json",
         },
       });
-      console.log("RRRRRRRRRRRRRRR", response)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

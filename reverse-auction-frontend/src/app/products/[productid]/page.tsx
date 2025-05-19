@@ -26,8 +26,7 @@ export default function ProductDetails({
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    console.log(params.productid);
-    // console.log(productId)
+
     if (params.productid) {
       const fetchProducts = async () => {
         const fetchedProduct = await getProductById(params.productid);

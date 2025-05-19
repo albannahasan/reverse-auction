@@ -12,7 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bluishGray: 'hsl(240, 11.11%, 96.47%)',
+        bluishGray: "hsl(240, 11.11%, 96.47%)",
         primary: "#e5771e",
         secondary: "#f4a127",
         darkPrimary: "#d34f1f", // Custom dark mode primary color
@@ -34,6 +34,26 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      keyframes: {
+        slideLeft: {
+          "0%": { transform: "translateX(100%)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        float: {
+          "0%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-20px)" },
+          "100%": { transform: "translateY(0px)" },
+        },
+      },
+      animation: {
+        slideLeft: "slideLeft 0.5s ease-out",
+        fadeIn: "fadeIn 0.5s ease-in-out",
+        float: "float 3s ease-in-out infinite",
       },
     },
   },

@@ -1,13 +1,17 @@
-import React from 'react';
-import HomepageProductCard from './HomepageProductCard';
+import React from "react";
+import HomepageProductCard from "./HomepageProductCard";
 
 const PicturePanelContainer: React.FC = () => {
   return (
-    <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-8 rounded-lg shadow-lg justify-center bg-cyan-700 min-w-full w-120">
-        <div className="w-20 text-white overflow-overlay h-[550px]">
-            
-        </div>
-        <div className="h-[511px] w-[610px] mb-10 ml-10 mr-25"></div>
+    <div className="p-4  rounded-lg shadow-lg justify-center w-full">
+      <div className="w-full h-[500px] overflow-hidden rounded-lg mr-auto">
+        <img
+          src="https://i.etsystatic.com/6611199/r/il/957121/1580712013/il_794xN.1580712013_kjyh.jpg"
+          alt="Sample product"
+          className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+        />
+
+      </div>
     </div>
   );
 };

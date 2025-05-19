@@ -12,6 +12,28 @@ const calculateTimeLeft = ({ createdDate }: { createdDate: string }): string => 
   }
 };
 
+export const calculateAuctionTimeLeft = (startTime: string, endTime: string): string => {
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  const now = new Date();
+
+  if (now < start) {
+    return "Not started";
+  }
+
+  const difference = end.getTime() - now.getTime();
+
+  console.log("Difference in milliseconds:", difference, start, end, now);
+
+  if (difference > 0) {
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((difference / (1000 * 60)) % 60);
+    return `${days > 0 ? `${days}d ` : ""}${hours}h ${minutes}m left`;
+  } else {
+    return "Time Up";
+  }
+};
 export function timeAgo(date: string | number | Date): string {
   const now = new Date();
   const past = new Date(date);

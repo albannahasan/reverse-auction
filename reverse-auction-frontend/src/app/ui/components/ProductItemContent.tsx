@@ -83,7 +83,7 @@ const ProductItemContent = (props: Props) => {
         <div className="font-normal font-raleway  ">
           <p className="text-gray-500 text-[0.875rem]">Bids</p>
           <span className="text-lg font-semibold text-[#1D1F22]">
-            {props.bid?.length}
+            3
           </span>
         </div>
       </div>
@@ -128,14 +128,22 @@ const ProductItemContent = (props: Props) => {
           <div></div>
         )}
       </div>
-      <div className="font-normal font-raleway rounded-lg text-[20px] leading-[77%] text-[#1D1F22] mb-6 p-4 max-w-50 ">
-        <div className="mt-2">
-          Conditions: {props.condition ? props.condition : "No conditions specified"}
+      <div className="font-normal font-raleway rounded-lg text-[15px] leading-[77%] text-[#1D1F22] mb-6 p-4 max-w-50 ">
+        <div className=" text-gray-500 mb-4">
+          Conditions: {props.condition ? formatCondition(props.condition): "No conditions specified"}
+        </div>
+        <div className=" text-gray-500 mb-4">
+          Shipping: No Information provided
         </div>
       </div>
 
     </div>
   );
 };
+
+function formatCondition(text: string): string {
+  const lower = text.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
 
 export default ProductItemContent;

@@ -5,7 +5,7 @@ import Navbar from "./components/global/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 import { NextUIProvider } from "@nextui-org/react";
-import Footer from "./components/global/footer";
+import Footer from "./components/global/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",

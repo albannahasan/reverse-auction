@@ -95,7 +95,7 @@ const ProductCard = (props: Props) => {
         <div className="mb-auto w-full mt-2 px-8 relative">
           <div>
             <h2 className="font-semibold text-lg">{props.itemName}</h2>
-            <h3>{props.condition}</h3>
+            <h3 className="text-gray-500">{props.condition}</h3>
           </div>
           <hr className="my-2" />
           <div className="grid grid-cols-2 max-h-80">
@@ -109,6 +109,7 @@ const ProductCard = (props: Props) => {
               ) : (
                 <div>
                   Time Left
+                  
                   <h2 className="font-semibold">
                     {day} Day {hour} Hour {minute} Minute left
                   </h2>
