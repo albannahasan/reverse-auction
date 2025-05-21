@@ -10,9 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.hasan.productservice.Entity.Product;
@@ -38,11 +38,11 @@ public class ProductServiceImpl implements ProductService {
         if (!product.isPresent()) {
             throw new ProductNotFoundException(id);
         }
-   
+
         Product unwrappedProduct = unwrapProduct(product, id);
 
         ProductDto productResult = mapToDto(unwrappedProduct);
-        
+
         return productResult;
 
     }
@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto updateProduct(Long id, Product product) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id));
-    
+
         // Update fields of the existing product
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
@@ -71,13 +71,10 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setStartTime(product.getStartTime());
         existingProduct.setStartTime(product.getEndTime());
 
-    
-    
         // Save the updated product
         Product updatedProduct = productRepository.save(existingProduct);
         ProductDto result = mapToDto(updatedProduct);
 
-    
         return result;
     }
 
@@ -88,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProducts(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Product> products = productRepository.findAll(pageable);
         List<Product> listOfProduct = products.getContent();
         return listOfProduct.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
@@ -115,11 +112,10 @@ public class ProductServiceImpl implements ProductService {
         ProductDto productDto = new ProductDto();
 
         if (product.getBids() != null) {
-            
+
             List<BidDto> bidList = getBidsFromBidService(product.getBids());
             productDto.setBids(bidList);
         }
-
 
         productDto.setId(product.getId());
         productDto.setName(product.getName());
@@ -156,26 +152,24 @@ public class ProductServiceImpl implements ProductService {
                             .bodyToMono(String.class);
                 });
 
-                List<String> responses = responseFlux
+        List<String> responses = responseFlux
                 .collectList()
                 .block(); // Block until all responses are collected
-    
+
         if (responses != null) {
             for (String response : responses) {
                 try {
                     JsonNode jsonNode = objectMapper.readTree(response);
-    
+
                     BidDto bidEntry = new BidDto();
                     Long bidId = jsonNode.get("id").asLong();
                     Long productId = jsonNode.get("productId").asLong();
-                    String bidNumber = jsonNode.get("bidNumber").asText();
                     Double price = jsonNode.get("price").asDouble(); // Correct field name to 'price'
-    
-                    bidEntry.setBidNumber(bidNumber);
+
                     bidEntry.setId(bidId);
                     bidEntry.setProductId(productId);
                     bidEntry.setPrice(price);
-    
+
                     result.add(bidEntry);
                 } catch (Exception e) {
                     System.err.println("Failed to parse JSON response: " + e.getMessage());
@@ -186,15 +180,14 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-
     @Scheduled(fixedRate = 60000) // Check every minute
     @Transactional
     public void checkAndCloseExpiredProducts() {
         List<Product> expiredProducts = productRepository.findByIsClosedFalseAndEndTimeBefore(LocalDateTime.now());
 
         for (Product product : expiredProducts) {
-            product.close();  // Mark the product as closed
-            productRepository.save(product);  // Update the product in the database
+            product.close(); // Mark the product as closed
+            productRepository.save(product); // Update the product in the database
             System.out.println("Product " + product.getName() + " has been closed due to expiration.");
         }
     }
