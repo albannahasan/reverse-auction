@@ -9,3 +9,4 @@ maven-*
 /reverse-auction-frontend/build/
 /reverse-auction-frontend/.env
 /reverse-auction-frontend/.next/*
+*-SNAPSHOT.jar

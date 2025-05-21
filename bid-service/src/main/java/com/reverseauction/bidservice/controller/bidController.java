@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reverseauction.bidservice.dto.BidDto;
+import com.reverseauction.bidservice.dto.BidResponseDto;
 import com.reverseauction.bidservice.entity.Bid;
 import com.reverseauction.bidservice.exception.ProductNotFoundException;
 import com.reverseauction.bidservice.service.BidService;
@@ -63,13 +64,13 @@ public class bidController {
     }
 
     @GetMapping("/by-product/{id}")
-    public ResponseEntity<List<BidDto>> getBidsByProductId(
+    public ResponseEntity<BidResponseDto> getBidsByProductId(
             @PathVariable Long id,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
             @RequestParam(value = "latestOnly", defaultValue = "false", required = false) boolean latestOnly) {
 
-        List<BidDto> bids = bidService.getBidsByProductId(id, pageNo, pageSize, latestOnly);
+        BidResponseDto bids = bidService.getBidsByProductId(id, pageNo, pageSize, latestOnly);
         return ResponseEntity.ok(bids);
     }
 

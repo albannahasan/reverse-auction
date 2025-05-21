@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.reverseauction.bidservice.dto.BidDto;
+import com.reverseauction.bidservice.dto.BidResponseDto;
 import com.reverseauction.bidservice.dto.ProductResponseDto;
 import com.reverseauction.bidservice.entity.Bid;
 import com.reverseauction.bidservice.exception.BidNotFoundException;
@@ -45,8 +46,6 @@ public class BidServiceImpl implements BidService {
     public Mono<Bid> saveBid(Bid bid) {
         String uriTemplate = "http://product-service/product/{id}";
 
-        
-
         Mono<ProductResponseDto> productMono = webClientBuilder.build().get()
                 .uri(uriTemplate, bid.getProductId())
                 .retrieve()
@@ -58,7 +57,6 @@ public class BidServiceImpl implements BidService {
                 });
         ;
 
-
         return productMono
                 .map(productResponseDto -> {
                     // If product service is up and running, then we can save the bid
@@ -66,7 +64,7 @@ public class BidServiceImpl implements BidService {
                     Long bidPrice = (long) bid.getPrice();
                     Long productId = productResponseDto.getId();
 
-                    List<BidDto> latestBid = getBidsByProductId(productId, 0, 0, true);
+                    List<BidDto> latestBid = getBidsByProductId(productId, 0, 0, true).getBids();
 
                     if (latestBid.size() > 0) {
                         BidDto latestBidDto = latestBid.get(0);
@@ -109,15 +107,15 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public List<BidDto> getBidsByProductId(Long id, int pageNo, int pageSize, boolean latestOnly) {
+    public BidResponseDto getBidsByProductId(Long id, int pageNo, int pageSize, boolean latestOnly) {
         PageRequest pageable = latestOnly
                 ? PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdAt")) // latest bid only
                 : PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "createdAt")); // normal paging
 
         Page<Bid> bidPage = bidRepository.findByProductId(id, pageable);
-        List<Bid> bids = bidPage.getContent();
+        List<BidDto> bidDtos = bidPage.getContent().stream().map(this::mapToDto).collect(Collectors.toList());
 
-        return bids.stream().map(this::mapToDto).collect(Collectors.toList());
+        return new BidResponseDto(bidDtos, bidPage.getTotalElements(), pageNo, pageSize);
     }
 
     // @Override
