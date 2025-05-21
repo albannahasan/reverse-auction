@@ -13,5 +13,5 @@ public interface BidService {
     void deleteBid(Long id);    
     // Bid updateBid(Double amount, Long id, Long userId, Long productId);
     List<BidDto> getBids(int pageNo, int pageSize);
-    List<BidDto> getBidsByProductId(Long id, int pageNo, int pageSize);
+    List<BidDto> getBidsByProductId(Long id, int pageNo, int pageSize, boolean latestOnly)
 }

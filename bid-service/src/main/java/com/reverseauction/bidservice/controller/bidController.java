@@ -38,15 +38,8 @@ public class bidController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Bid> createBid(@Valid @RequestBody Bid bid) {
-        // TODO: process POST request
-        try {
-            Bid createdBid = bidService.saveBid(bid).block(); // Block to wait for completion
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdBid);
-        } catch (ProductNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        Bid createdBid = bidService.saveBid(bid).block();
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBid);
     }
 
     @DeleteMapping("/{id}")
@@ -70,11 +63,14 @@ public class bidController {
     }
 
     @GetMapping("/by-product/{id}")
-    public ResponseEntity<List<BidDto>> getBidsByProductId(@PathVariable Long id,
+    public ResponseEntity<List<BidDto>> getBidsByProductId(
+            @PathVariable Long id,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
-        return new ResponseEntity<>(bidService.getBidsByProductId(id, pageNo, pageSize), HttpStatus.OK);
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "latestOnly", defaultValue = "false", required = false) boolean latestOnly) {
 
+        List<BidDto> bids = bidService.getBidsByProductId(id, pageNo, pageSize, latestOnly);
+        return ResponseEntity.ok(bids);
     }
 
 }

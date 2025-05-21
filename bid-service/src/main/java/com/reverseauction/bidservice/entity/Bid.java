@@ -33,9 +33,6 @@ public class Bid {
 	private long productId;
 
 	@Column(nullable = false)
-	private String bidNumber;
-
-	@Column(nullable = false)
 	private double price;
 
 	@Column(nullable = false, updatable = false)

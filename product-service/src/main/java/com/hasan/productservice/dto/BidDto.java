@@ -12,6 +12,4 @@ public class BidDto {
     private long id;
     private long productId;
     private double price;
-	private String bidNumber;
-
 }
