@@ -5,6 +5,7 @@ import HomepageInfoCard from "./HomepageInfoCard";
 import Image from "next/image";
 import { calculateAuctionTimeLeft } from "@/app/utils/utils";
 import { image } from "@nextui-org/theme";
+import { useRouter } from "next/navigation";
 
 type Props = {
   placeholder?: string;
@@ -29,7 +30,15 @@ interface Product {
   imageUrls: string;
 }
 
+
 export default function AuctionCard({ product }: { product: Product }) {
+
+  const router = useRouter();
+  const goToProductDetail = (id: Number, e: { preventDefault: () => void }) => {
+
+    e.preventDefault();
+    router.push(`/products/${id}`);
+  };
   return (
     <Card className="w-full group hover:bg-gray-100 transition duration-300 ease-in-out animate-fadeIn">
       <img
@@ -63,7 +72,7 @@ export default function AuctionCard({ product }: { product: Product }) {
           </div>
         </div>
 
-        <button className="bg-black w-full justify-center font-medium text-white text-xl px-4 py-2 rounded">
+        <button className="bg-black w-full justify-center font-medium text-white text-xl px-4 py-2 rounded" onClick={(e) => goToProductDetail(product.id, e)}>
           Bid Now
         </button>
       </CardHeader>

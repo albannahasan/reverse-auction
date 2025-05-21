@@ -1,4 +1,5 @@
 "use server";
+
 export async function getAllProductsActions(pageSize:Number) {
     try {
       const response = await fetch(`http://localhost:8085/product/all?pageNo=0&pageSize=${pageSize}`, {

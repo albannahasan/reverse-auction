@@ -57,9 +57,6 @@ const ProductCard = (props: Props) => {
         (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
       );
 
-      // Update state variables
-      console.log(days, hours, minutes, "SSSSSSSSSSSSSSSS");
-
       setDay(days);
       setHour(hours);
       setMinute(minutes);
