@@ -74,4 +74,10 @@ public class bidController {
         return ResponseEntity.ok(bids);
     }
 
+    @PostMapping("/close-and-select-winner/{productId}")
+    public ResponseEntity<Void> closeAndPickWinner(@PathVariable Long productId) {
+        bidService.closeAndSelectWinner(productId);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -81,7 +81,7 @@ public class ProductController {
                     bid.setProductId(productId); // Set productId for each bid
                     // Call WebClient and return a Mono<String>
                     return webClient.post()
-                            .uri("http://localhost:8085/bid")
+                            .uri("http://localhost:51284/bid")
                             .body(BodyInserters.fromValue(bid))
                             .retrieve()
                             .bodyToMono(String.class);

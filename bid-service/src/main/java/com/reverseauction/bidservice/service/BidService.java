@@ -15,4 +15,5 @@ public interface BidService {
     // Bid updateBid(Double amount, Long id, Long userId, Long productId);
     List<BidDto> getBids(int pageNo, int pageSize);
     BidResponseDto getBidsByProductId(Long id, int pageNo, int pageSize, boolean latestOnly);
+    void closeAndSelectWinner(Long productId);
 }

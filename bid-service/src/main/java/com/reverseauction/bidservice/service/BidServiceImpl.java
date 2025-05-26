@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import com.reverseauction.bidservice.bid_enum.BidStatus;
 import com.reverseauction.bidservice.dto.BidDto;
 import com.reverseauction.bidservice.dto.BidResponseDto;
 import com.reverseauction.bidservice.dto.ProductResponseDto;
@@ -20,6 +21,7 @@ import com.reverseauction.bidservice.exception.BidNotFoundException;
 import com.reverseauction.bidservice.exception.InvalidBidAmountException;
 import com.reverseauction.bidservice.exception.ProductNotFoundException;
 import com.reverseauction.bidservice.repository.BidRepository;
+import java.util.Comparator;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -132,6 +134,29 @@ public class BidServiceImpl implements BidService {
             return entity.get();
         else
             throw new BidNotFoundException(id);
+    }
+
+    public void closeAndSelectWinner(Long productId) {
+        List<Bid> bids = bidRepository.findByProductIdAndStatus(productId, BidStatus.PENDING);
+
+        if (bids.isEmpty()) {
+            System.out.println("No active bids for product: " + productId);
+            return;
+        }
+
+        // Close all bids
+        Bid winningBid = bids.stream()
+                .max(Comparator.comparingDouble(Bid::getPrice))
+                .orElse(null);
+
+        for (Bid bid : bids) {
+            if (bid.equals(winningBid)) {
+                bid.setStatus(BidStatus.WINNER);
+            } else {
+                bid.setStatus(BidStatus.CLOSED);
+            }
+        }
+        bidRepository.saveAll(bids);
     }
 
     private BidDto mapToDto(Bid bid) {

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.hasan.productservice.Entity.Product;
@@ -23,14 +24,27 @@ import com.hasan.productservice.repository.ProductRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import reactor.core.publisher.Flux;
 
-@AllArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     private final WebClient webClient;
+    private final RestTemplate restTemplate;
+    @Value("${bid.service.url}")
+    private String bidServiceUrl;
+
+    public ProductServiceImpl(
+        ProductRepository productRepository,
+        WebClient webClient,
+        RestTemplate restTemplate
+    ) {
+        this.productRepository = productRepository;
+        this.webClient = webClient;
+        this.restTemplate = restTemplate;
+    }
+
 
     @Override
     public ProductDto getProduct(Long id) {
@@ -180,15 +194,27 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    @Scheduled(fixedRate = 60000) // Check every minute
-    @Transactional
-    public void checkAndCloseExpiredProducts() {
-        List<Product> expiredProducts = productRepository.findByIsClosedFalseAndEndTimeBefore(LocalDateTime.now());
 
+
+    @Scheduled(fixedRate = 60000) // Runs every 60 seconds
+    @Transactional
+    public void closeAndSelectWinners() {
+        List<Product> expiredProducts = productRepository.findByIsClosedFalseAndEndTimeBefore(LocalDateTime.now());
+        System.out.println("Checking for expired products... Found " + expiredProducts.size() + " expired products.");
         for (Product product : expiredProducts) {
-            product.close(); // Mark the product as closed
-            productRepository.save(product); // Update the product in the database
-            System.out.println("Product " + product.getName() + " has been closed due to expiration.");
+            product.close(); // This could be product.setClosed(true);
+            productRepository.save(product);
+
+            System.out.println("✅ Product " + product.getName() + " has been closed.");
+
+            try {
+                String url = bidServiceUrl + "/close-and-select-winner/" + product.getId();
+                System.out.println(url);
+                restTemplate.postForEntity(url, null, Void.class);
+                System.out.println("🏁 Bid Service notified to select winner for product ID: " + product.getId());
+            } catch (Exception e) {
+                System.err.println("❌ Failed to notify Bid Service for product ID " + product.getId() + ": " + e.getMessage());
+            }
         }
     }
 

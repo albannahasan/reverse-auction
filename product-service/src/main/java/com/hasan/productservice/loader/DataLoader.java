@@ -3,8 +3,6 @@ package com.hasan.productservice.loader;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import org.hibernate.validator.internal.util.logging.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -20,7 +18,6 @@ public class DataLoader implements ApplicationRunner {
 
     private final ProductRepository productRepository;
 
-    @Autowired
     public DataLoader(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -48,7 +45,7 @@ public class DataLoader implements ApplicationRunner {
             .condition(Condition.POOR)
             .createdDate(now)
             .startTime(now)
-            .endTime(now.plusMinutes(10))
+            .endTime(now.plusMinutes(2))
             .bids(Arrays.asList())
             .isClosed(false)
             .build();
