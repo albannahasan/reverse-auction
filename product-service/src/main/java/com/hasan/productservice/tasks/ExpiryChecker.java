@@ -27,7 +27,6 @@ public class ExpiryChecker {
 
     public void startChecking(long interval, TimeUnit unit, List<Product> products) {
         scheduler.scheduleAtFixedRate(() -> {
-            System.out.println("Checking for expired products...");
             for (Product product : products) {
                 if (product.isExpired()) {
                     System.out.println(product.getName() + " has expired.");

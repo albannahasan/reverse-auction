@@ -136,6 +136,24 @@ public class BidServiceImpl implements BidService {
             throw new BidNotFoundException(id);
     }
 
+    public void handleProductDeletion(Long productId) {
+        System.out.println("Handling product deletion for product ID: " + productId);
+        Page<Bid> bids = bidRepository.findByProductId(productId, null);
+        if (bids.isEmpty()) {
+            System.out.println("No bids found for product: " + productId);
+            return;
+        }
+        
+
+        // Close all bids related to the deleted product
+        List<Bid> bidList = bids.getContent();
+        for (Bid bid : bidList) {
+            bid.setStatus(BidStatus.ORPHANED);
+        }
+
+        bidRepository.saveAll(bidList);
+    }
+
     public void closeAndSelectWinner(Long productId) {
         List<Bid> bids = bidRepository.findByProductIdAndStatus(productId, BidStatus.PENDING);
 

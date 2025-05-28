@@ -18,12 +18,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.hasan.productservice.Entity.Product;
-import com.hasan.productservice.Entity.Product.ProductBuilder;
 import com.hasan.productservice.dto.ProductDto;
 import com.hasan.productservice.repository.ProductRepository;
 import com.hasan.productservice.service.ProductServiceImpl;

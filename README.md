@@ -6,6 +6,7 @@
 - Automated testing suites for each microservice
 - API Gateway handling routing and load balancing for optimized performance and reliability
 - Service Registry with eureka
+- Event service with Apache Kafka
 ## Local Development
 ### Clone the Repository locally
 ```
@@ -21,6 +22,7 @@ git clone https://github.com/albannablade123/reverse-auction.git
  - [Spring Data JPA](https://spring.io/projects/spring-data-jpa) repository abstractions
  - [Resilience4j](https://resilience4j.readme.io/docs/getting-started) lightweight fault tolerance library designed for functional programming
  - [Mockito]
+ - [Apache Kafka]
 
  ### Front-end
  - [React](https://react.dev/)  Frontend framework

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,7 @@ import com.hasan.productservice.Entity.Product;
 import com.hasan.productservice.Exception.ProductNotFoundException;
 import com.hasan.productservice.dto.BidDto;
 import com.hasan.productservice.dto.ProductDto;
+import com.hasan.productservice.event.ProductDeletedEvent;
 import com.hasan.productservice.repository.ProductRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -30,20 +32,24 @@ import reactor.core.publisher.Flux;
 @Service
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
+    private final KafkaTemplate<String, ProductDeletedEvent> kafkaTemplate;
     private final WebClient webClient;
     private final RestTemplate restTemplate;
     @Value("${bid.service.url}")
     private String bidServiceUrl;
 
     public ProductServiceImpl(
-        ProductRepository productRepository,
-        WebClient webClient,
-        RestTemplate restTemplate
-    ) {
+            ProductRepository productRepository,
+            WebClient webClient,
+            RestTemplate restTemplate,
+            KafkaTemplate<String, ProductDeletedEvent> kafkaTemplate) {
         this.productRepository = productRepository;
         this.webClient = webClient;
         this.restTemplate = restTemplate;
+        this.kafkaTemplate = kafkaTemplate;
+        System.out.println("KafkaTemplate initialized: " + (kafkaTemplate != null));
     }
+
 
 
     @Override
@@ -83,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setImages(new ArrayList<>(product.getImages())); // Defensive copy for images
         existingProduct.setBids(new ArrayList<>(product.getBids())); // Defensive copy for bids
         existingProduct.setStartTime(product.getStartTime());
-        existingProduct.setStartTime(product.getEndTime());
+        existingProduct.setEndTime(product.getEndTime());
 
         // Save the updated product
         Product updatedProduct = productRepository.save(existingProduct);
@@ -95,6 +101,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+        ProductDeletedEvent event = new ProductDeletedEvent(id);
+        System.out.println("Sending ProductDeletedEvent for product ID: " + id);
+        kafkaTemplate.send("product-deleted-topic", event);
     }
 
     @Override
@@ -194,13 +203,10 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-
-
     @Scheduled(fixedRate = 60000) // Runs every 60 seconds
     @Transactional
     public void closeAndSelectWinners() {
         List<Product> expiredProducts = productRepository.findByIsClosedFalseAndEndTimeBefore(LocalDateTime.now());
-        System.out.println("Checking for expired products... Found " + expiredProducts.size() + " expired products.");
         for (Product product : expiredProducts) {
             product.close(); // This could be product.setClosed(true);
             productRepository.save(product);
@@ -213,7 +219,8 @@ public class ProductServiceImpl implements ProductService {
                 restTemplate.postForEntity(url, null, Void.class);
                 System.out.println("🏁 Bid Service notified to select winner for product ID: " + product.getId());
             } catch (Exception e) {
-                System.err.println("❌ Failed to notify Bid Service for product ID " + product.getId() + ": " + e.getMessage());
+                System.err.println(
+                        " Failed to notify Bid Service for product ID " + product.getId() + ": " + e.getMessage());
             }
         }
     }
