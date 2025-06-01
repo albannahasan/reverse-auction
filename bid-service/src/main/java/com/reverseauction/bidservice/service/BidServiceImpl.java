@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -17,22 +18,30 @@ import com.reverseauction.bidservice.dto.BidDto;
 import com.reverseauction.bidservice.dto.BidResponseDto;
 import com.reverseauction.bidservice.dto.ProductResponseDto;
 import com.reverseauction.bidservice.entity.Bid;
+import com.reverseauction.bidservice.event.BidClosedEvent;
 import com.reverseauction.bidservice.exception.BidNotFoundException;
 import com.reverseauction.bidservice.exception.InvalidBidAmountException;
 import com.reverseauction.bidservice.exception.ProductNotFoundException;
 import com.reverseauction.bidservice.repository.BidRepository;
 import java.util.Comparator;
 
-import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
-@AllArgsConstructor
 @Service
 public class BidServiceImpl implements BidService {
     BidRepository bidRepository;
 
     private final WebClient.Builder webClientBuilder;
+    private final KafkaTemplate<String, BidClosedEvent> kafkaTemplate;
+
     // private final KafkaTemplate<String, BidPlacedEvent> kafkaTemplate;
+
+    public BidServiceImpl(BidRepository bidRepository, KafkaTemplate<String, BidClosedEvent> kafkaTemplate, WebClient.Builder webClientBuilder) {
+        this.bidRepository = bidRepository;
+        this.kafkaTemplate = kafkaTemplate;
+        this.webClientBuilder = webClientBuilder;
+        
+    }
 
     @Override
     public Bid getBid(Long id) {
@@ -143,7 +152,6 @@ public class BidServiceImpl implements BidService {
             System.out.println("No bids found for product: " + productId);
             return;
         }
-        
 
         // Close all bids related to the deleted product
         List<Bid> bidList = bids.getContent();
@@ -174,6 +182,17 @@ public class BidServiceImpl implements BidService {
                 bid.setStatus(BidStatus.CLOSED);
             }
         }
+
+        // Send event for the winning bid
+        BidClosedEvent bidClosedEvent = new BidClosedEvent(
+                productId,
+                winningBid.getUserId(),
+                winningBid.getId(),
+                winningBid.getPrice()
+        );
+
+        System.out.println("Sending BidClosedEvent for bid ID: " + winningBid.getId());
+        kafkaTemplate.send("bid-closed-topic", bidClosedEvent);
         bidRepository.saveAll(bids);
     }
 

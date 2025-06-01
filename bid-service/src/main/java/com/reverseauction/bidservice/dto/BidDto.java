@@ -16,5 +16,6 @@ public class BidDto {
     private BidStatus status; // Enum field
     private LocalDateTime createdAt; // Added field
     private LocalDateTime updatedAt; // Added field
+    private long userId;
 
 }

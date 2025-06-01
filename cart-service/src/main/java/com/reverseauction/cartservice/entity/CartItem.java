@@ -30,12 +30,6 @@ public class CartItem {
     private long productId;
 
     @Column(nullable = false)
-    private String productName;
-
-    @Column(nullable = false)
-    private int quantity;
-
-    @Column(nullable = false)
     private double price;
 
     @Column(nullable = false)

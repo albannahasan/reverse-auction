@@ -47,7 +47,6 @@ public class ProductServiceImpl implements ProductService {
         this.webClient = webClient;
         this.restTemplate = restTemplate;
         this.kafkaTemplate = kafkaTemplate;
-        System.out.println("KafkaTemplate initialized: " + (kafkaTemplate != null));
     }
 
 
@@ -211,13 +210,13 @@ public class ProductServiceImpl implements ProductService {
             product.close(); // This could be product.setClosed(true);
             productRepository.save(product);
 
-            System.out.println("✅ Product " + product.getName() + " has been closed.");
+            System.out.println("Product " + product.getName() + " has been closed.");
 
             try {
                 String url = bidServiceUrl + "/close-and-select-winner/" + product.getId();
                 System.out.println(url);
                 restTemplate.postForEntity(url, null, Void.class);
-                System.out.println("🏁 Bid Service notified to select winner for product ID: " + product.getId());
+                System.out.println("Bid Service notified to select winner for product ID: " + product.getId());
             } catch (Exception e) {
                 System.err.println(
                         " Failed to notify Bid Service for product ID " + product.getId() + ": " + e.getMessage());

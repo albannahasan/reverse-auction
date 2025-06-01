@@ -11,7 +11,6 @@ import lombok.Setter;
 public class CartDto {
     private long id;
     private long userId;
-    private int totalQuantity;
     private double totalPrice;
     private String note;
     private LocalDateTime createdAt;

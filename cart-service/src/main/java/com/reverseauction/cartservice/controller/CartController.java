@@ -35,6 +35,12 @@ public class CartController {
         return new ResponseEntity<>(cartService.getCart(id), HttpStatus.OK);
     }
 
+    @GetMapping("user/{userId}")
+    public ResponseEntity<Cart> getCartByUserId(@PathVariable Long userId) {
+        return new ResponseEntity<>(cartService.getCartByUserId(userId), HttpStatus.OK);
+    }
+
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CartDto> createCart(@Valid @RequestBody Cart cart) {

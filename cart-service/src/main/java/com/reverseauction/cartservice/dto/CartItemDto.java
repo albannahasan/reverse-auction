@@ -10,8 +10,6 @@ import lombok.Setter;
 public class CartItemDto {
     private long id;
     private long productId;
-    private String productName;
-    private int quantity;
     private double price;
     private LocalDateTime addedAt;
 }
