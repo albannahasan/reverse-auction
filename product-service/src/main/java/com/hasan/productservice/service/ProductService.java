@@ -12,4 +12,5 @@ public interface ProductService {
     ProductDto updateProduct(Long id, Product produc);
     List<ProductDto> getProducts(int pageNo, int pageSize);
     void closeAndSelectWinners();
+    List<ProductDto> getProductsByIds(List<Long> productIds);
 }

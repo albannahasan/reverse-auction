@@ -102,7 +102,7 @@ const displayPrice = props.latestBid ? props.latestBid.price : props.itemPrice;
 
       <div className="flex justify-between items-center ">
         <div className="block text-[#1D1F22] ">
-          <p className="font-black text-sm">Current Bid</p>
+          <p className="font-semibold text-sm">Current Bid</p>
           <div className="font-bold font-raleway text-2xl ">
             ${displayPrice.toFixed(2)}
           </div>

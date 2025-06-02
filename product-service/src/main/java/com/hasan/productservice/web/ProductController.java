@@ -50,7 +50,7 @@ public class ProductController {
     @Autowired
     ProductServiceImpl productServiceImpl;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
         return new ResponseEntity<>(productService.getProduct(id), HttpStatus.OK);
     }
@@ -63,51 +63,51 @@ public class ProductController {
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto product) {
         ObjectMapper objectMapper = new ObjectMapper();
 
-    List<BidDto> bidToSave = product.getBids();
-    product.setBids(Collections.emptyList());
+        List<BidDto> bidToSave = product.getBids();
+        product.setBids(Collections.emptyList());
 
-    // Step 1: Save the product without bids
-    ProductDto createdProduct = productService.saveProduct(product);
-    Long productId = createdProduct.getId();
+        // Step 1: Save the product without bids
+        ProductDto createdProduct = productService.saveProduct(product);
+        Long productId = createdProduct.getId();
 
-    if (bidToSave != null && !bidToSave.isEmpty()) {
-        List<Long> bids = new ArrayList<>();
+        if (bidToSave != null && !bidToSave.isEmpty()) {
+            List<Long> bids = new ArrayList<>();
 
-        // Create Flux from the list of bids
-        Flux<String> responseFlux = Flux.fromIterable(bidToSave)
-                .flatMap(bid -> {
-                    bid.setProductId(productId); // Set productId for each bid
-                    // Call WebClient and return a Mono<String>
-                    return webClient.post()
-                            .uri("http://localhost:51284/bid")
-                            .body(BodyInserters.fromValue(bid))
-                            .retrieve()
-                            .bodyToMono(String.class);
-                });
+            // Create Flux from the list of bids
+            Flux<String> responseFlux = Flux.fromIterable(bidToSave)
+                    .flatMap(bid -> {
+                        bid.setProductId(productId); // Set productId for each bid
+                        // Call WebClient and return a Mono<String>
+                        return webClient.post()
+                                .uri("http://localhost:51284/bid")
+                                .body(BodyInserters.fromValue(bid))
+                                .retrieve()
+                                .bodyToMono(String.class);
+                    });
 
-        // Block and wait for all responses
-        List<String> responses = responseFlux.collectList().block();
+            // Block and wait for all responses
+            List<String> responses = responseFlux.collectList().block();
 
-        if (responses != null) {
-            for (String response : responses) {
-                try {
-                    JsonNode jsonNode = objectMapper.readTree(response);
-                    int id = jsonNode.get("id").asInt();
-                    Long idLong = (long) id;
-                    bids.add(idLong);
-                } catch (Exception e) {
-                    System.err.println("Failed to parse JSON response: " + e.getMessage());
+            if (responses != null) {
+                for (String response : responses) {
+                    try {
+                        JsonNode jsonNode = objectMapper.readTree(response);
+                        int id = jsonNode.get("id").asInt();
+                        Long idLong = (long) id;
+                        bids.add(idLong);
+                    } catch (Exception e) {
+                        System.err.println("Failed to parse JSON response: " + e.getMessage());
+                    }
                 }
             }
+
+            // Step 2: Update product with bids
+            Product productEntity = ProductServiceImpl.mapToEntity(createdProduct);
+            productEntity.setBids(new ArrayList<>(bids)); // Defensive copy
+            createdProduct = productService.updateProduct(productId, productEntity);
         }
 
-        // Step 2: Update product with bids
-        Product productEntity = ProductServiceImpl.mapToEntity(createdProduct);
-        productEntity.setBids(new ArrayList<>(bids)); // Defensive copy
-        createdProduct = productService.updateProduct(productId, productEntity);
-    }
-
-    return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -134,5 +134,12 @@ public class ProductController {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<List<ProductDto>> getProductsByIds(@RequestBody List<Long> productIds) {
+        System.out.println("Received product IDs: " + productIds);
+        List<ProductDto> products = productService.getProductsByIds(productIds);
+        return ResponseEntity.ok(products);
     }
 }

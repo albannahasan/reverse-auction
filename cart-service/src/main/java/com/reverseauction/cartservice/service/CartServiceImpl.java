@@ -16,6 +16,7 @@ import com.reverseauction.cartservice.entity.CartItem;
 import com.reverseauction.cartservice.exception.CartNotFoundException;
 import com.reverseauction.cartservice.repository.CartRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -66,9 +67,9 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void handleBidClosed(Long productId, Long userId, Long winningBidId, double winningAmount) {
         // Fetch the cart for the user
-
         System.out.println("Handling bid closed event for product ID: " + productId + ", user ID: " + userId
                 + ", winning bid ID: " + winningBidId + ", winning amount: " + winningAmount);
 
@@ -93,16 +94,15 @@ public class CartServiceImpl implements CartService {
             System.out.println("Cart found for user ID: " + userId);
             Cart cart = cartOptional.get();
 
-            cart.setTotalQuantity(cart.getTotalQuantity() + 1);
             cart.setTotalPrice(cart.getTotalPrice() + winningAmount);
             cart.setNote("Bid closed event processed, winning bid added to cart");
-
-            // Here you can add logic to update the items in the cart if needed
-            // For example, you might want to add the product details to the cart items
 
             CartItem cartItem = new CartItem();
             cartItem.setProductId(productId);
             cartItem.setPrice(winningAmount);
+            cartItem.setCart(cart); 
+
+            System.out.println("Adding item to cart: " + cartItem.getProductId() + " with price: " + cartItem.getPrice());
             if (cart.getItems() == null) {
                 cart.setItems(new ArrayList<>());
             }

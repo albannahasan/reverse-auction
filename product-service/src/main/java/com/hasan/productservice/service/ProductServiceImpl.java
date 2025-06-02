@@ -49,8 +49,6 @@ public class ProductServiceImpl implements ProductService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-
-
     @Override
     public ProductDto getProduct(Long id) {
         Optional<Product> product = productRepository.findById(id);
@@ -200,6 +198,13 @@ public class ProductServiceImpl implements ProductService {
         }
         return result;
 
+    }
+
+    public List<ProductDto> getProductsByIds(List<Long> productIds) {
+        List<Product> products = productRepository.findAllById(productIds);
+        return products.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Scheduled(fixedRate = 60000) // Runs every 60 seconds
