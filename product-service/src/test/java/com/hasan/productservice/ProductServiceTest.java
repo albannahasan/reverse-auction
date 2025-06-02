@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.hasan.productservice.Entity.Product;
 import com.hasan.productservice.dto.ProductDto;
+import com.hasan.productservice.dto.ProductPageResponse;
 import com.hasan.productservice.repository.ProductRepository;
 import com.hasan.productservice.service.ProductServiceImpl;
 
@@ -80,7 +81,7 @@ public class ProductServiceTest {
 
         when(productRepository.findAll(Mockito.any(Pageable.class))).thenReturn(products);
 
-        List<ProductDto> saveProduct = productService.getProducts(1,10);
+        ProductPageResponse saveProduct = productService.getProducts(1,10);
 
         Assertions.assertThat(saveProduct).isNotNull();
 

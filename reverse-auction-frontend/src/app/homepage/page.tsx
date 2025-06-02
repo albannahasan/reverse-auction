@@ -34,7 +34,7 @@ export default function Homepage() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const products = await getAllProductsActions(10);
+      const products = await getAllProductsActions(0,1);
       console.log("Fetched products:", products); // Print products to the console
       setProducts(products);
 

@@ -10,6 +10,7 @@ import com.hasan.productservice.Entity.Product;
 import com.hasan.productservice.Exception.ProductNotFoundException;
 import com.hasan.productservice.dto.BidDto;
 import com.hasan.productservice.dto.ProductDto;
+import com.hasan.productservice.dto.ProductPageResponse;
 import com.hasan.productservice.service.ProductService;
 import com.hasan.productservice.service.ProductServiceImpl;
 
@@ -117,12 +118,14 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDto>> getProducts(
+    public ResponseEntity<ProductPageResponse> getProducts(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
 
     ) {
-        return new ResponseEntity<>(productService.getProducts(pageNo, pageSize), HttpStatus.OK);
+        ProductPageResponse response = productService.getProducts(pageNo, pageSize);
+        return ResponseEntity.ok(response);
+        
     }
 
     public CompletableFuture<String> fallbackMethod(Product product, RuntimeException runtimeException) {

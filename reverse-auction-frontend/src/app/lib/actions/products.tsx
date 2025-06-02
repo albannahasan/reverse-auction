@@ -1,10 +1,9 @@
 "use server";
 
-export async function getAllProductsActions(pageSize:Number) {
+export async function getAllProductsActions(pageNo: Number, pageSize:Number) {
     try {
-      const response = await fetch(`http://localhost:8085/product/all?pageNo=0&pageSize=${pageSize}`, {
+      const response = await fetch(`http://localhost:8085/product/all?pageNo=${pageNo}&pageSize=${pageSize}`, {
         method: "GET",
-        mode: 'no-cors',
         headers: {
           "Content-Type": "application/json",
         },

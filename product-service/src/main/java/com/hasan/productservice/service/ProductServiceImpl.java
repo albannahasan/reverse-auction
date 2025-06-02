@@ -21,6 +21,7 @@ import com.hasan.productservice.Entity.Product;
 import com.hasan.productservice.Exception.ProductNotFoundException;
 import com.hasan.productservice.dto.BidDto;
 import com.hasan.productservice.dto.ProductDto;
+import com.hasan.productservice.dto.ProductPageResponse;
 import com.hasan.productservice.event.ProductDeletedEvent;
 import com.hasan.productservice.repository.ProductRepository;
 
@@ -104,11 +105,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getProducts(int pageNo, int pageSize) {
+    public ProductPageResponse getProducts(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<Product> products = productRepository.findAll(pageable);
-        List<Product> listOfProduct = products.getContent();
-        return listOfProduct.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
+        Page<Product> page = productRepository.findAll(pageable);
+        List<ProductDto> content = page.getContent()
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+
+        ProductPageResponse response = new ProductPageResponse();
+        response.setContent(content);
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalElements(page.getTotalElements());
+        response.setTotalPages(page.getTotalPages());
+        response.setLast(page.isLast());
+
+        return response;
     }
 
     public static Product mapToEntity(ProductDto productDto) {

@@ -5,7 +5,7 @@ import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import FilterTable from "../ui/components/FilterCard";
-import { Input } from "@nextui-org/react";
+import { Input, Pagination } from "@nextui-org/react";
 import { log } from "console";
 
 interface Product {
@@ -38,16 +38,26 @@ export default function ProductList() {
   const hasSearchFilter = Boolean(filterValue);
   const [minPrice, setMinPrice] = useState(null);
   const [maxPrice, setMaxPrice] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const [page, setPage] = useState(1);
+
+  const rowsPerPage = 10;
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const products = await getAllProductsActions(5);
+      const result = await getAllProductsActions(page - 1, rowsPerPage);
+      if (!result || result.length === 0) {
+        console.error("No products found or result is not an array");
+        return;
+      }
+
       console.log("Fetched products:", products); // Print products to the console
-      setProducts(products);
+      setProducts(result.content);
+      setTotalPages(result.totalPages);
     };
 
     fetchProducts();
-  }, []);
+  }, [page, rowsPerPage]);
 
   const filteredproducts = useMemo(() => {
     if (
@@ -153,20 +163,6 @@ export default function ProductList() {
     return pageItems;
   }, [sortDescriptor, filteredproducts]);
 
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 10;
-
-  const pages = Math.ceil(sortedItems.length / rowsPerPage);
-  const pageItems = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    if (products != null) {
-      return sortedItems.slice(start, end);
-    } else {
-      return [];
-    }
-  }, [page, sortedItems]);
   const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
@@ -245,12 +241,10 @@ export default function ProductList() {
               onValueChange={onSearchChange}
             />
 
-            {pageItems.length == 0 ? (
-              <div>
-                LOADING.....
-              </div>
+            {sortedItems.length == 0 ? (
+              <div>LOADING.....</div>
             ) : (
-              pageItems.map((product: any) => (
+              sortedItems.map((product: any) => (
                 <ProductCard
                   id={product.id}
                   key={product.id}
@@ -266,6 +260,16 @@ export default function ProductList() {
                 />
               ))
             )}
+            <div className="flex justify-center mt-6">
+              <Pagination
+                page={page}
+                total={totalPages}
+                onChange={setPage}
+                size="lg"
+                variant="bordered"
+                color="primary"
+              />
+            </div>
           </div>
         </div>
       </div>
